@@ -1,12 +1,13 @@
 "use client";
 
 import { ethers } from "ethers";
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SiweMessage } from "siwe";
 
 export default function ConnectButton() {
+  const { data: session } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -71,7 +72,15 @@ export default function ConnectButton() {
     }
   };
 
-  return (
+  const handleLuksoSignOut = async () => {
+    await signOut();
+  };
+
+  return session?.user ? (
+    <>
+      <button onClick={handleLuksoSignOut}>Sign out</button>
+    </>
+  ) : (
     <>
       <button
         className="bg-sky-400"
