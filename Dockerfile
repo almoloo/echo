@@ -2,7 +2,12 @@
 FROM node:22-slim AS deps
 RUN apt-get update && apt-get install -y \
     python3 \
-    build-essential
+    build-essential \
+    curl \
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+# Add Rust to PATH
+ENV PATH="/root/.cargo/bin:$PATH"
 
 WORKDIR /app
 
