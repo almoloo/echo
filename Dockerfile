@@ -24,7 +24,7 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # If you're using Next.js >= 13 and App Router:
 # Uncomment if you’re using next/image with remote images

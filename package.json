@@ -12,6 +12,7 @@
     "@erc725/erc725.js": "^0.27.2",
     "@lukso/lsp-smart-contracts": "^0.16.2",
     "ethers": "^5.8.0",
+    "mongodb": "^6.15.0",
     "next": "15.2.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
