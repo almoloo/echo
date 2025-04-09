@@ -28,7 +28,7 @@ ENV NODE_ENV production
 
 # If you're using Next.js >= 13 and App Router:
 # Uncomment if you’re using next/image with remote images
-RUN apk add --no-cache sharp
+# RUN apk add --no-cache sharp
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
