@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:18-alpine AS deps
+FROM node:20-alpine AS deps
 RUN apk add --no-cache \
     python3 \
     make \
@@ -28,7 +28,7 @@ ENV NODE_ENV production
 
 # If you're using Next.js >= 13 and App Router:
 # Uncomment if you’re using next/image with remote images
-# RUN apk add --no-cache sharp
+RUN apk add --no-cache sharp
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
