@@ -3,14 +3,17 @@ import type { NextAuthOptions } from "next-auth";
 import UniversalProfileContract from "@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json";
 import { getAddress, getContract, createPublicClient, http } from "viem";
 import { lukso } from "viem/chains";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import { clientPromise } from "@/lib/db";
 
-const client = createPublicClient({
+const LuksoClient = createPublicClient({
   chain: lukso,
   transport: http(),
 });
 
 export const authOptions: NextAuthOptions = {
   debug: true,
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
     CredentialsProvider({
       id: "lukso-up",
@@ -34,7 +37,7 @@ export const authOptions: NextAuthOptions = {
           const contract = getContract({
             abi: UniversalProfileContract.abi,
             address: getAddress(credentials.address || "0x"),
-            client,
+            client: LuksoClient,
           });
 
           const isValidSignature = await contract.read.isValidSignature([
