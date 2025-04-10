@@ -8,7 +8,7 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY package.json package-lock.json* .npmrc* ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 FROM base AS builder
 WORKDIR /app
