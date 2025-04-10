@@ -8,6 +8,11 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY package.json package-lock.json* .npmrc* ./
+
+ARG NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
+ARG DB_URI
+
 RUN npm install --legacy-peer-deps
 
 FROM base AS builder
@@ -16,9 +21,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG NEXTAUTH_SECRET
-ARG NEXTAUTH_URL
-ARG DB_URI
 
 RUN npm run build
 
