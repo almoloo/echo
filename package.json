@@ -11,13 +11,11 @@
   "dependencies": {
     "@erc725/erc725.js": "^0.27.2",
     "@lukso/lsp-smart-contracts": "^0.16.2",
-    "ethers": "^5.8.0",
     "mongodb": "^6.15.0",
     "next": "15.2.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "siwe": "^3.0.0",
     "viem": "^2.26.1"
   },
   "devDependencies": {

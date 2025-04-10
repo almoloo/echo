@@ -1,10 +1,11 @@
 "use client";
 
-import { ethers } from "ethers";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { SiweMessage } from "siwe";
+import { createWalletClient, custom, hashMessage } from "viem";
+import { lukso } from "viem/chains";
+import { createSiweMessage } from "viem/siwe";
 
 export default function ConnectButton() {
   const { data: session } = useSession();
@@ -23,31 +24,33 @@ export default function ConnectButton() {
         throw new Error("Universal Profile Browser Extension not found");
       }
 
-      // @ts-ignore
-      const provider = new ethers.providers.Web3Provider(window.lukso);
-      const { chainId } = await provider.getNetwork();
+      const [address] = await window.lukso.request({
+        method: "eth_requestAccounts",
+      });
+      const client = createWalletClient({
+        account: address,
+        chain: lukso,
+        transport: custom(window.lukso!),
+      });
+      const chainId = await client.getChainId();
 
-      const accounts = await provider.send("eth_requestAccounts", []);
-      if (accounts.length === 0) {
-        throw new Error("No accounts found");
-      }
-
-      const address = accounts[0];
-      const signer = provider.getSigner(address);
-
-      const siweMessage = new SiweMessage({
+      const message = createSiweMessage({
         domain: window.location.host,
-        address: accounts[0],
+        address,
         statement: "By logging in you agree to the terms and conditions.",
         uri: window.location.origin,
         version: "1",
         chainId,
-      }).prepareMessage();
+        nonce: Date.now().toString(),
+      });
 
-      const signature = await signer.signMessage(siweMessage);
+      const signature = await client.signMessage({
+        account: client.account!,
+        message,
+      });
 
       const result = await signIn("lukso-up", {
-        message: ethers.utils.hashMessage(siweMessage),
+        message: hashMessage(message),
         signature,
         address,
         redirect: false,

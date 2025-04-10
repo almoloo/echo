@@ -1,43 +1,48 @@
-# Install dependencies only when needed
-FROM node:22-slim AS deps
-RUN apt-get update && apt-get install -y \
-    python3 \
-    build-essential \
-    curl \
-    && curl https://sh.rustup.rs -sSf | sh -s -- -y
+FROM node:22-alpine AS base
 
-# Add Rust to PATH
-ENV PATH="/root/.cargo/bin:$PATH"
-
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm install
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
+RUN \
+    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+    elif [ -f package-lock.json ]; then npm ci; \
+    elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+    else echo "Lockfile not found." && exit 1; \
+    fi
 
-# Rebuild the source code only when needed
-FROM node:22-slim AS builder
+FROM base AS builder
 WORKDIR /app
 
-COPY . .
 COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
-RUN npm run build
+RUN \
+    if [ -f yarn.lock ]; then yarn run build; \
+    elif [ -f package-lock.json ]; then npm run build; \
+    elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+    else echo "Lockfile not found." && exit 1; \
+    fi
 
-# Production image, copy all the files you need
-FROM node:22-slim AS runner
+FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# If you're using Next.js >= 13 and App Router:
-# Uncomment if you’re using next/image with remote images
 # RUN apk add --no-cache sharp
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+ENV PORT=3000
+
+ENV HOSTNAME="0.0.0.0"
+CMD ["node", "server.js"]

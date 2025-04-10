@@ -13,11 +13,5 @@ interface Window {
       callback: (...args: any[]) => void
     ) => void;
   };
-  lukso: {
-    chainId: string;
-    deprecationNotified: boolean;
-    handleAccountsChanged: () => void;
-    handleChainChanged: () => void;
-    isUniversalProfileExtension: boolean;
-  };
+  lukso: EthereumProvider;
 }
