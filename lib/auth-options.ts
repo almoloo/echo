@@ -58,7 +58,6 @@ export const authOptions: NextAuthOptions = {
             // CREATE USER
             userID = (await createUser(credentials.address)).toString();
           }
-          console.log("userID: ", userID);
           return {
             id: userID,
             address: credentials.address,
