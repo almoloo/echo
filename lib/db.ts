@@ -1,4 +1,4 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { Db, MongoClient, ServerApiVersion } from "mongodb";
 
 if (!process.env.DB_URI) {
   throw new Error("Mongo URI not found!");
@@ -15,6 +15,7 @@ const options = {
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
+let db: Db;
 
 if (process.env.NODE_ENV === "development") {
   let globalWithMongo = global as typeof globalThis & {
@@ -26,9 +27,11 @@ if (process.env.NODE_ENV === "development") {
   }
   client = globalWithMongo._mongoClient;
   clientPromise = client.connect();
+  db = client.db("echo");
 } else {
   client = new MongoClient(uri, options);
   clientPromise = client.connect();
+  db = client.db("echo");
 }
 
-export { client, clientPromise };
+export { client, clientPromise, db };

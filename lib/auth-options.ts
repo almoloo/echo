@@ -3,6 +3,7 @@ import type { NextAuthOptions } from "next-auth";
 import UniversalProfileContract from "@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json";
 import { getAddress, getContract, createPublicClient, http } from "viem";
 import { lukso } from "viem/chains";
+import { createUser, getUser } from "@/lib/actions";
 
 const LuksoClient = createPublicClient({
   chain: lukso,
@@ -47,8 +48,19 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          // CHECK IF USER EXISTS IN DATABASE
+          const user = await getUser(credentials.address);
+          let userID: string;
+          if (user) {
+            // FETCH ID
+            userID = user._id.toString();
+          } else {
+            // CREATE USER
+            userID = (await createUser(credentials.address)).toString();
+          }
+          console.log("userID: ", userID);
           return {
-            id: credentials.address,
+            id: userID,
             address: credentials.address,
           };
         } catch (error) {

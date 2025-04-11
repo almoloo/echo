@@ -12,12 +12,10 @@ export default function ConnectButton() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [debugInfo, setDebugInfo] = useState<any>(null);
 
   const handleLuksoSignIn = async () => {
     setIsLoading(true);
     setError("");
-    setDebugInfo(null);
 
     try {
       if (typeof window === undefined || !window.lukso) {
@@ -57,8 +55,6 @@ export default function ConnectButton() {
         callbackUrl: "/",
       });
 
-      setDebugInfo(result);
-
       if (result?.error) {
         setError(result.error);
       } else if (result?.url) {
@@ -93,14 +89,6 @@ export default function ConnectButton() {
         {isLoading ? "Connecting..." : "Connect with UP"}
       </button>
       {error && <p className="text-red-500">{error}</p>}
-      {debugInfo && (
-        <div className="mt-4 p-4 bg-gray-100 rounded max-w-lg w-full">
-          <p className="font-semibold">Debug Info:</p>
-          <pre className="whitespace-pre-wrap text-xs mt-2">
-            {JSON.stringify(debugInfo, null, 2)}
-          </pre>
-        </div>
-      )}
     </>
   );
 }
