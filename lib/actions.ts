@@ -48,16 +48,8 @@ export const createUser = async (address: string) => {
   return res.insertedId;
 };
 
-export const getUser = async (address: string) => {
-  if (!address || address === "") {
-    throw new Error("Wallet address is required!");
-  }
-
+export const editUser = async (address: string, userInfo: UserInfo) => {
   const collection = db.collection("users");
-  const user = await collection.findOne({
-    address,
-  });
-  return user;
+  const filter = { address };
+  const res = await collection.updateOne(filter, { $set: { info: userInfo } });
 };
-
-export const editUser = async (userId: number, userInfo: User) => {};

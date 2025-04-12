@@ -1,6 +1,6 @@
 import { authOptions } from "@/lib/auth-options";
 import { getServerSession } from "next-auth";
-import { SessionProvider } from "@/lib/session-provider";
+import { SessionProvider } from "@/services/session-provider";
 import { ReactNode } from "react";
 
 interface ProvidersProps {

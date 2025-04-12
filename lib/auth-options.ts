@@ -3,7 +3,8 @@ import type { NextAuthOptions } from "next-auth";
 import UniversalProfileContract from "@lukso/lsp-smart-contracts/artifacts/UniversalProfile.json";
 import { getAddress, getContract, createPublicClient, http } from "viem";
 import { lukso } from "viem/chains";
-import { createUser, getUser } from "@/lib/actions";
+import { createUser } from "@/lib/actions";
+import { getUser } from "@/lib/data";
 
 const LuksoClient = createPublicClient({
   chain: lukso,
