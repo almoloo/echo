@@ -2,7 +2,8 @@ interface User {
   _id?: ObjectId;
   address?: string;
   info?: UserInfo;
-  chatThread?: string;
+  assistantId?: string;
+  infoFileId?: string;
 }
 
 interface UserInfo {

@@ -34,7 +34,6 @@ export default async function ProfilePage() {
   return (
     <div>
       <h1>profile</h1>
-      <pre>{JSON.stringify(userProfile?.info)}</pre>
       <Form action={updateProfile}>
         <ProfileForm
           updateProfile={updateProfile}

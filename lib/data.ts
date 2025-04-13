@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { ERC725 } from "@erc725/erc725.js";
 import profileSchema from "@erc725/erc725.js/schemas/LSP3ProfileMetadata.json";
 
+// ---------- USER DATA
+
 export const fetchUPMetadata = async (address: string) => {
   const erc725js = new ERC725(
     profileSchema,
