@@ -74,6 +74,8 @@ export const initializeAssistant = async (userData: User) => {
     purpose: "assistants",
   });
 
+  fs.rmdir(path.join("/", "tmp"), () => {});
+
   const assistant = await openai.beta.assistants.create({
     name: `${userData.address} personal assistant`,
     description:
