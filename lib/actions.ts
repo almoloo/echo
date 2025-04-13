@@ -46,32 +46,10 @@ export const createUser = async (address: string) => {
     newUserData.info.avatar = largestImage ? largestImage.url : defaultAvatar;
   }
 
-  const filePath = path.join(process.cwd(), `${newUserData.address}-data.json`);
-  fs.writeFileSync(filePath, JSON.stringify(newUserData, null, 2));
-  const readStream = fs.createReadStream(filePath);
+  const assistant = await initializeAssistant(newUserData);
 
-  const infoFile = await openai.files.create({
-    file: readStream,
-    purpose: "assistants",
-  });
-
-  newUserData.infoFileId = infoFile.id;
-
-  const assistant = await openai.beta.assistants.create({
-    name: `${newUserData.address} personal assistant`,
-    description:
-      "Acts as the user and answers questions based on their provided profile data. Avoids hallucinations and steers conversations back to the user.",
-    instructions: createAssistantPrompt(),
-    model: "gpt-4o",
-    tools: [{ type: "code_interpreter" }],
-    tool_resources: {
-      code_interpreter: {
-        file_ids: [infoFile.id],
-      },
-    },
-  });
-
-  newUserData.assistantId = assistant.id;
+  newUserData.infoFileId = assistant.infoFile.id;
+  newUserData.assistantId = assistant.assistant.id;
 
   const collection = db.collection("users");
   const res = await collection.insertOne({ ...newUserData });
@@ -86,7 +64,38 @@ export const editUser = async (address: string, userInfo: UserInfo) => {
 
 // ---------- AI ACTIONS
 
-export const initializeTraining = async () => {};
+export const initializeAssistant = async (userData: User) => {
+  const filePath = path.join(
+    process.cwd(),
+    `public/tmp/${userData.address}-data.json`
+  );
+  fs.writeFileSync(filePath, JSON.stringify(userData, null, 2));
+  const readStream = fs.createReadStream(filePath);
+
+  const infoFile = await openai.files.create({
+    file: readStream,
+    purpose: "assistants",
+  });
+
+  const assistant = await openai.beta.assistants.create({
+    name: `${userData.address} personal assistant`,
+    description:
+      "Acts as the user and answers questions based on their provided profile data. Avoids hallucinations and steers conversations back to the user.",
+    instructions: createAssistantPrompt(),
+    model: "gpt-4o",
+    tools: [{ type: "code_interpreter" }],
+    tool_resources: {
+      code_interpreter: {
+        file_ids: [infoFile.id],
+      },
+    },
+  });
+
+  return {
+    assistant,
+    infoFile,
+  };
+};
 
 export const generateQuestions = async (
   newAnswers?: QuestionAnswer[],
