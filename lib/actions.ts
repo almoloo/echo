@@ -10,6 +10,7 @@ import {
 import { openai } from "@/services/openai";
 import fs from "fs";
 import path from "path";
+import { AssistantResponseFormatOption } from "openai/resources/beta/index.mjs";
 
 // ---------- USER ACTIONS
 
@@ -113,11 +114,15 @@ const initializeAssistant = async (
   address: string
 ) => {
   let assistantInfo;
+  let responseFormat: AssistantResponseFormatOption = { type: "text" };
 
   if (assistantType === "echo") {
     assistantInfo = echoAssistantInfo;
   } else if (assistantType === "training") {
     assistantInfo = trainingAssistantInfo;
+    responseFormat = {
+      type: "json_object",
+    };
   }
 
   const assistant = await openai.beta.assistants.create({
@@ -125,6 +130,7 @@ const initializeAssistant = async (
     description: assistantInfo?.description,
     instructions: assistantInfo?.instructions,
     model: "gpt-4o",
+    response_format: responseFormat,
     tools: [{ type: "code_interpreter" }],
     tool_resources: {
       code_interpreter: {
