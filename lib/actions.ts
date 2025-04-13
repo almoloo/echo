@@ -67,7 +67,7 @@ export const editUser = async (address: string, userInfo: UserInfo) => {
 export const initializeAssistant = async (userData: User) => {
   const filePath = path.join(
     process.cwd(),
-    `public/tmp/${userData.address}-data.json`
+    `public/${userData.address}-data.json`
   );
   fs.writeFileSync(filePath, JSON.stringify(userData, null, 2));
   const readStream = fs.createReadStream(filePath);
