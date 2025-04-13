@@ -65,10 +65,7 @@ export const editUser = async (address: string, userInfo: UserInfo) => {
 // ---------- AI ACTIONS
 
 export const initializeAssistant = async (userData: User) => {
-  const filePath = path.join(
-    process.cwd(),
-    `public/${userData.address}-data.json`
-  );
+  const filePath = path.join("/", "tmp", `${userData.address}-data.json`);
   fs.writeFileSync(filePath, JSON.stringify(userData, null, 2));
   const readStream = fs.createReadStream(filePath);
 
