@@ -30,5 +30,19 @@ export const getUser = async (address: string) => {
   const user = await collection.findOne({
     address,
   });
+
   return user;
+};
+
+export const getUserData = async (address: string) => {
+  if (!address || address === "") {
+    throw new Error("Wallet address is required!");
+  }
+
+  const collection = db.collection("data");
+  const userData = await collection.findOne({
+    address,
+  });
+
+  return userData;
 };

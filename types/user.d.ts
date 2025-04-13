@@ -4,6 +4,7 @@ interface User {
   info?: UserInfo;
   assistantId?: string;
   infoFileId?: string;
+  trainingAssistantId?: string;
 }
 
 interface UserInfo {
@@ -16,4 +17,9 @@ interface UserInfo {
     url: string;
   }[];
   tags?: string[];
+}
+
+interface UserObject extends User {
+  questions?: QuestionAnswer[];
+  skipped?: string[];
 }

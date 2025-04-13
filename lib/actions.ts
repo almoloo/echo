@@ -1,8 +1,12 @@
 "server only";
 
 import { db } from "@/lib/db";
-import { fetchUPMetadata } from "@/lib/data";
-import { createAssistantPrompt, defaultAvatar } from "@/lib/constants";
+import { fetchUPMetadata, getUser, getUserData } from "@/lib/data";
+import {
+  defaultAvatar,
+  echoAssistantInfo,
+  trainingAssistantInfo,
+} from "@/lib/constants";
 import { openai } from "@/services/openai";
 import fs from "fs";
 import path from "path";
@@ -46,10 +50,12 @@ export const createUser = async (address: string) => {
     newUserData.info.avatar = largestImage ? largestImage.url : defaultAvatar;
   }
 
-  const assistant = await initializeAssistant(newUserData);
+  // const assistant = await initializeAssistant(newUserData, AssistantType.echo);
+  const assistants = await createAssistants(newUserData);
 
-  newUserData.infoFileId = assistant.infoFile.id;
-  newUserData.assistantId = assistant.assistant.id;
+  newUserData.infoFileId = assistants.infoFile.id;
+  newUserData.assistantId = assistants.echoAssistant.id;
+  newUserData.trainingAssistantId = assistants.trainingAssistant.id;
 
   const collection = db.collection("users");
   const res = await collection.insertOne({ ...newUserData });
@@ -58,13 +64,15 @@ export const createUser = async (address: string) => {
 
 export const editUser = async (address: string, userInfo: UserInfo) => {
   const collection = db.collection("users");
-  const filter = { address };
-  const res = await collection.updateOne(filter, { $set: { info: userInfo } });
+  const res = await collection.updateOne(
+    { address },
+    { $set: { info: userInfo } }
+  );
 };
 
 // ---------- AI ACTIONS
 
-export const initializeAssistant = async (userData: User) => {
+const createInfoFile = async (userData: User) => {
   const filePath = path.join("/", "tmp", `${userData.address}-data.json`);
   fs.writeFileSync(filePath, JSON.stringify(userData, null, 2));
   const readStream = fs.createReadStream(filePath);
@@ -76,24 +84,107 @@ export const initializeAssistant = async (userData: User) => {
 
   fs.rmdir(path.join("/", "tmp"), () => {});
 
+  return infoFile;
+};
+
+const createAssistants = async (userData: User) => {
+  const infoFile = await createInfoFile(userData);
+  const echoAssistant = await initializeAssistant(
+    infoFile.id,
+    "echo",
+    userData.address!
+  );
+  const trainingAssistant = await initializeAssistant(
+    infoFile.id,
+    "training",
+    userData.address!
+  );
+
+  return {
+    infoFile,
+    echoAssistant,
+    trainingAssistant,
+  };
+};
+
+const initializeAssistant = async (
+  infoFileId: string,
+  assistantType: "echo" | "training",
+  address: string
+) => {
+  let assistantInfo;
+
+  if (assistantType === "echo") {
+    assistantInfo = echoAssistantInfo;
+  } else if (assistantType === "training") {
+    assistantInfo = trainingAssistantInfo;
+  }
+
   const assistant = await openai.beta.assistants.create({
-    name: `${userData.address} personal assistant`,
-    description:
-      "Acts as the user and answers questions based on their provided profile data. Avoids hallucinations and steers conversations back to the user.",
-    instructions: createAssistantPrompt(),
+    name: assistantInfo?.title.replace("address", address),
+    description: assistantInfo?.description,
+    instructions: assistantInfo?.instructions,
     model: "gpt-4o",
     tools: [{ type: "code_interpreter" }],
     tool_resources: {
       code_interpreter: {
-        file_ids: [infoFile.id],
+        file_ids: [infoFileId],
       },
     },
   });
 
-  return {
-    assistant,
-    infoFile,
+  return assistant;
+};
+
+const updateAssistants = async (address: string) => {
+  const userInfo: User | null = await getUser(address);
+  const userData = await getUserData(address);
+
+  let mergedData: UserObject = {
+    address,
+    info: userInfo?.info,
   };
+
+  if (userData) {
+    mergedData.questions = userData.questions;
+    mergedData.skipped = userData.skipped;
+  }
+
+  const { id: infoFileId } = await createInfoFile(mergedData);
+
+  const { id: assistantId } = await openai.beta.assistants.update(
+    userInfo?.assistantId!,
+    {
+      tool_resources: {
+        code_interpreter: {
+          file_ids: [infoFileId],
+        },
+      },
+    }
+  );
+
+  const { id: trainingAssistantId } = await openai.beta.assistants.update(
+    userInfo?.trainingAssistantId!,
+    {
+      tool_resources: {
+        code_interpreter: {
+          file_ids: [infoFileId],
+        },
+      },
+    }
+  );
+
+  const collection = db.collection("users");
+  const res = await collection.updateOne(
+    { address },
+    {
+      $set: {
+        assistantId,
+        trainingAssistantId,
+        infoFileId,
+      },
+    }
+  );
 };
 
 export const generateQuestions = async (
