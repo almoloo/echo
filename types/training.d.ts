@@ -1,7 +1,10 @@
 type TrainingAttribute = "identity" | "career" | "connection";
 
-interface QuestionAnswer {
+interface Question {
   type: TrainingAttribute;
   question: string;
+}
+
+interface QuestionAnswer extends Question {
   answer: string;
 }

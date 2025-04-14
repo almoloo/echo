@@ -28,9 +28,13 @@ export const trainingInfo = {
   },
 };
 
-const trainingResponseFormat = z.object({
+const questionObject = z.object({
   type: z.enum(["identity", "career", "connection"]),
   question: z.string(),
+});
+
+const trainingResponseFormat = z.object({
+  questions: z.array(questionObject),
 });
 
 const echoResponseFormat = z.object({
