@@ -1,3 +1,6 @@
+import { zodResponseFormat } from "openai/helpers/zod";
+import { z } from "zod";
+
 export const defaultAvatar = "QmQTL6Xbewa475QGvRzsNRgMUdeEF2iJqZZbt9mWi9Gtvy";
 
 export const trainingInfo = {
@@ -25,6 +28,15 @@ export const trainingInfo = {
   },
 };
 
+const trainingResponseFormat = z.object({
+  type: z.enum(["identity", "career", "connection"]),
+  question: z.string(),
+});
+
+const echoResponseFormat = z.object({
+  response: z.string(),
+});
+
 export const echoAssistantInfo = {
   title: "address personal assistant",
   instructions: `You are an AI assistant speaking on behalf of the person described in the provided data. Your job is to answer questions as if you are that person. Respond using a semi-casual tone that sounds friendly and natural.
@@ -39,9 +51,20 @@ Use the following rules:
 	5.	Don’t give general advice or engage in tasks outside your scope – Your only job is to represent the profile owner and talk about them.
 	6.	Tone & personality – Be semi-casual and personable. You can add small friendly phrases like “Glad you asked!” or “Haha, good question” if appropriate, but don’t overdo it.
 
-You’ll be provided a JSON object with the user’s info, tags, and a list of Q&A pairs in questions. Use all of that to help you respond accurately.`,
+You’ll be provided a JSON object with the user’s info, tags, and a list of Q&A pairs in questions. Use all of that to help you respond accurately.
+
+Output format:
+Only return a valid JSON object using this structure:
+
+{
+"question": "User's question here",
+"answer": "Assistant's response here"
+},
+
+Do not include any explanations or text outside the array.`,
   description:
     "Acts as the user and answers questions based on their provided profile data. Avoids hallucinations and steers conversations back to the user.",
+  responseFormat: zodResponseFormat(echoResponseFormat, "echo_format"),
 };
 
 export const trainingAssistantInfo = {
@@ -73,6 +96,9 @@ Only return a valid JSON array using this structure:
 
 Do not include any explanations or text outside the array.`,
   description: `Generates insightful, personalized questions for the profile owner based on their provided data and past answers. Avoids repetition, asks follow-ups to deepen understanding, and ensures each question is clear and self-contained. Categorizes questions into identity, career, and connection topics to help build a well-rounded personal assistant.`,
+  prompt:
+    "Update your knowlege with the json file you have, if it was modified since the last time, read it again and generate 18 new questions. Respond with pure json that can be parsed.",
+  responseFormat: zodResponseFormat(trainingResponseFormat, "training_format"),
 };
 
 export const generateQuestionPrompt = (

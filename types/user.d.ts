@@ -5,6 +5,7 @@ interface User {
   assistantId?: string;
   infoFileId?: string;
   trainingAssistantId?: string;
+  trainingAssistantThreadId?: string;
 }
 
 interface UserInfo {

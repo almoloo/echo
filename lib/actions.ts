@@ -1,4 +1,4 @@
-"server only";
+"use server";
 
 import { db } from "@/lib/db";
 import { fetchUPMetadata, getUser, getUserData } from "@/lib/data";
@@ -11,6 +11,7 @@ import { openai } from "@/services/openai";
 import fs from "fs";
 import path from "path";
 import { AssistantResponseFormatOption } from "openai/resources/beta/index.mjs";
+import { TextContentBlock } from "openai/resources/beta/threads/messages.mjs";
 
 // ---------- USER ACTIONS
 
@@ -57,6 +58,7 @@ export const createUser = async (address: string) => {
   newUserData.infoFileId = assistants.infoFile.id;
   newUserData.assistantId = assistants.echoAssistant.id;
   newUserData.trainingAssistantId = assistants.trainingAssistant.id;
+  newUserData.trainingAssistantThreadId = assistants.trainingAssistantThread.id;
 
   const collection = db.collection("users");
   const res = await collection.insertOne({ ...newUserData });
@@ -100,11 +102,13 @@ const createAssistants = async (userData: User) => {
     "training",
     userData.address!
   );
+  const trainingAssistantThread = await openai.beta.threads.create();
 
   return {
     infoFile,
     echoAssistant,
     trainingAssistant,
+    trainingAssistantThread,
   };
 };
 
@@ -114,15 +118,11 @@ const initializeAssistant = async (
   address: string
 ) => {
   let assistantInfo;
-  let responseFormat: AssistantResponseFormatOption = { type: "text" };
 
   if (assistantType === "echo") {
     assistantInfo = echoAssistantInfo;
   } else if (assistantType === "training") {
     assistantInfo = trainingAssistantInfo;
-    responseFormat = {
-      type: "json_object",
-    };
   }
 
   const assistant = await openai.beta.assistants.create({
@@ -130,7 +130,7 @@ const initializeAssistant = async (
     description: assistantInfo?.description,
     instructions: assistantInfo?.instructions,
     model: "gpt-4o",
-    response_format: responseFormat,
+    response_format: assistantInfo?.responseFormat,
     tools: [{ type: "code_interpreter" }],
     tool_resources: {
       code_interpreter: {
@@ -193,7 +193,47 @@ const updateAssistants = async (address: string) => {
   );
 };
 
-export const generateQuestions = async (
-  newAnswers?: QuestionAnswer[],
-  newSkipped?: string[]
-) => {};
+export const generateQuestions = async (address: string) => {
+  const userData = await getUser(address);
+
+  if (!userData) {
+    throw new Error("Failed to fetch user data!");
+  }
+
+  const { trainingAssistantThreadId, trainingAssistantId } = userData;
+  // const assistant = await openai.beta.assistants.retrieve(
+  //   userData?.trainingAssistantId
+  // );
+  // const thread = await openai.beta.threads.retrieve(
+  //   userData?.tradingAssistantThreadId
+  // );
+
+  console.log("🎈", trainingAssistantThreadId, trainingAssistantId);
+
+  const message = await openai.beta.threads.messages.create(
+    trainingAssistantThreadId,
+    {
+      role: "user",
+      content: trainingAssistantInfo.prompt,
+    }
+  );
+
+  console.log("🎈 message created");
+
+  const run = await openai.beta.threads.runs.createAndPoll(
+    trainingAssistantThreadId,
+    {
+      assistant_id: trainingAssistantId,
+    }
+  );
+
+  console.log("🎈 run created");
+
+  if (run.status === "completed") {
+    console.log("🎈 completed");
+    const messages = await openai.beta.threads.messages.list(run.thread_id);
+    const latestMessage = messages.data[0].content[0] as TextContentBlock;
+    console.log("🎈 message: ", latestMessage.text.value);
+    return latestMessage.text.value;
+  }
+};
