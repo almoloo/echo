@@ -1,5 +1,6 @@
 interface User {
   _id?: ObjectId;
+  created_at?: number;
   address?: string;
   info?: UserInfo;
   assistantId?: string;
@@ -21,6 +22,6 @@ interface UserInfo {
 }
 
 interface UserObject extends User {
-  questions?: QuestionAnswer[];
-  skipped?: string[];
+  answers?: QuestionAnswer[];
+  skipped?: Question[];
 }

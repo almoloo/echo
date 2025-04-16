@@ -3,6 +3,14 @@
 import { db } from "@/lib/db";
 import { ERC725 } from "@erc725/erc725.js";
 import profileSchema from "@erc725/erc725.js/schemas/LSP3ProfileMetadata.json";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth-options";
+
+const getUserAddress = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) throw new Error("You need to be signed in!");
+  return session.user.address;
+};
 
 // ---------- USER DATA
 
@@ -34,15 +42,24 @@ export const getUser = async (address: string) => {
   return user;
 };
 
-export const getUserData = async (address: string) => {
-  if (!address || address === "") {
-    throw new Error("Wallet address is required!");
-  }
+export const getUserAnswers = async () => {
+  const address = await getUserAddress();
+  const answersCollection = db.collection("answers");
 
-  const collection = db.collection("data");
-  const userData = await collection.findOne({
+  const answers = await answersCollection.find({
     address,
   });
 
-  return userData;
+  return answers.toArray() as unknown as QuestionAnswer[];
+};
+
+export const getUserSkipped = async () => {
+  const address = await getUserAddress();
+  const skippedCollection = db.collection("skipped");
+
+  const skipped = await skippedCollection.find({
+    address,
+  });
+
+  return skipped.toArray() as unknown as Question[];
 };

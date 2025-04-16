@@ -77,6 +77,8 @@ export const trainingAssistantInfo = {
 
 You will receive a JSON object containing the user's profile info and all previously answered questions. Use this data to:
 
+- First ask if the name you have is the name the profile owner wants to be introduced as. if not they should provide their name.
+- Cover the basics first, only then go deeper.
 - Ask deeper follow-up questions on topics that were already answered.
 - Avoid repeating any skipped or already answered questions verbatim.
 - If you re-ask a previously answered question (because the answer was vague or lacking depth), clearly state why in the new question (e.g., "Earlier you mentioned X, could you expand on...").

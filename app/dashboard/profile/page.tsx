@@ -8,7 +8,7 @@ import Form from "next/form";
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
   const userProfile = await getUser(session?.user.address!);
-  const { name, bio, links, tags, avatar } = userProfile?.info;
+  const { name, bio, links, tags, avatar, email } = userProfile?.info;
 
   async function updateProfile(formData: FormData) {
     "use server";
@@ -25,7 +25,7 @@ export default async function ProfilePage() {
         email: formData.get("email")?.toString(),
       };
       console.log(userInfo);
-      await editUser(session?.user.address!, userInfo);
+      await editUser(userInfo);
     } catch (error) {
       console.error(error);
     }
@@ -42,6 +42,7 @@ export default async function ProfilePage() {
           links={links}
           tags={tags}
           avatar={avatar}
+          email={email}
         />
       </Form>
     </div>

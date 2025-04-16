@@ -1,7 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { fetchUPMetadata, getUser, getUserData } from "@/lib/data";
+import {
+  fetchUPMetadata,
+  getUser,
+  getUserAnswers,
+  getUserSkipped,
+} from "@/lib/data";
 import {
   defaultAvatar,
   echoAssistantInfo,
@@ -10,8 +15,15 @@ import {
 import { openai } from "@/services/openai";
 import fs from "fs";
 import path from "path";
-import { AssistantResponseFormatOption } from "openai/resources/beta/index.mjs";
 import { TextContentBlock } from "openai/resources/beta/threads/messages.mjs";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth-options";
+
+const getUserAddress = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) throw new Error("You need to be signed in!");
+  return session.user.address;
+};
 
 // ---------- USER ACTIONS
 
@@ -52,25 +64,46 @@ export const createUser = async (address: string) => {
     newUserData.info.avatar = largestImage ? largestImage.url : defaultAvatar;
   }
 
-  // const assistant = await initializeAssistant(newUserData, AssistantType.echo);
   const assistants = await createAssistants(newUserData);
 
   newUserData.infoFileId = assistants.infoFile.id;
   newUserData.assistantId = assistants.echoAssistant.id;
   newUserData.trainingAssistantId = assistants.trainingAssistant.id;
   newUserData.trainingAssistantThreadId = assistants.trainingAssistantThread.id;
+  newUserData.created_at = Date.now();
 
   const collection = db.collection("users");
   const res = await collection.insertOne({ ...newUserData });
   return res.insertedId;
 };
 
-export const editUser = async (address: string, userInfo: UserInfo) => {
+export const editUser = async (userInfo: UserInfo) => {
+  const address = await getUserAddress();
   const collection = db.collection("users");
   const res = await collection.updateOne(
     { address },
     { $set: { info: userInfo } }
   );
+};
+
+export const saveAnswers = async (
+  answers: QuestionAnswer[],
+  skipped: Question[]
+) => {
+  const address = await getUserAddress();
+  const modifiedAnswers = answers.map((answer) => ({ address, ...answer }));
+  const modifiedSkipped = skipped.map((skippedItem) => ({
+    address,
+    ...skippedItem,
+  }));
+
+  const answersCollection = db.collection("answers");
+  const skippedCollection = db.collection("skipped");
+
+  const answersRes = await answersCollection.insertMany(modifiedAnswers);
+  const skippedRes = await skippedCollection.insertMany(modifiedSkipped);
+
+  await updateAssistants();
 };
 
 // ---------- AI ACTIONS
@@ -142,18 +175,24 @@ const initializeAssistant = async (
   return assistant;
 };
 
-const updateAssistants = async (address: string) => {
+const updateAssistants = async () => {
+  const address = await getUserAddress();
   const userInfo: User | null = await getUser(address);
-  const userData = await getUserData(address);
 
   let mergedData: UserObject = {
     address,
     info: userInfo?.info,
   };
 
-  if (userData) {
-    mergedData.questions = userData.questions;
-    mergedData.skipped = userData.skipped;
+  const answers = await getUserAnswers();
+  const skipped = await getUserSkipped();
+
+  if (answers && answers.length > 0) {
+    mergedData.answers = answers;
+  }
+
+  if (skipped && skipped.length > 0) {
+    mergedData.skipped = skipped;
   }
 
   const { id: infoFileId } = await createInfoFile(mergedData);
@@ -193,7 +232,8 @@ const updateAssistants = async (address: string) => {
   );
 };
 
-export const generateQuestions = async (address: string) => {
+export const generateQuestions = async () => {
+  const address = await getUserAddress();
   const userData = await getUser(address);
 
   if (!userData) {
@@ -201,14 +241,6 @@ export const generateQuestions = async (address: string) => {
   }
 
   const { trainingAssistantThreadId, trainingAssistantId } = userData;
-  // const assistant = await openai.beta.assistants.retrieve(
-  //   userData?.trainingAssistantId
-  // );
-  // const thread = await openai.beta.threads.retrieve(
-  //   userData?.tradingAssistantThreadId
-  // );
-
-  console.log("🎈", trainingAssistantThreadId, trainingAssistantId);
 
   const message = await openai.beta.threads.messages.create(
     trainingAssistantThreadId,
@@ -218,8 +250,6 @@ export const generateQuestions = async (address: string) => {
     }
   );
 
-  console.log("🎈 message created");
-
   const run = await openai.beta.threads.runs.createAndPoll(
     trainingAssistantThreadId,
     {
@@ -227,13 +257,9 @@ export const generateQuestions = async (address: string) => {
     }
   );
 
-  console.log("🎈 run created");
-
   if (run.status === "completed") {
-    console.log("🎈 completed");
     const messages = await openai.beta.threads.messages.list(run.thread_id);
     const latestMessage = messages.data[0].content[0] as TextContentBlock;
-    console.log("🎈 message: ", latestMessage.text.value);
     return latestMessage.text.value;
   }
 };
