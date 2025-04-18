@@ -1,15 +1,48 @@
 import { zodResponseFormat } from "openai/helpers/zod";
+import { title } from "process";
 import { z } from "zod";
 
 export const defaultAvatar = "QmQTL6Xbewa475QGvRzsNRgMUdeEF2iJqZZbt9mWi9Gtvy";
 
-export const trainingInfo = {
+export const identityStatsInfo = {
   identity: {
     min: 15,
     description: "Essential personal details and background",
     icon: "",
     color: "bg-sky-300",
     textColor: "text-sky-600",
+    levels: [
+      {
+        level: 1,
+        min: 0,
+        max: 15,
+        title: "Wandering Soul",
+      },
+      {
+        level: 2,
+        min: 15,
+        max: 30,
+        title: "Self Aware",
+      },
+      {
+        level: 3,
+        min: 30,
+        max: 50,
+        title: "Storyteller",
+      },
+      {
+        level: 4,
+        min: 50,
+        max: 70,
+        title: "Archivist",
+      },
+      {
+        level: 5,
+        min: 70,
+        max: 100,
+        title: "The Echomaker",
+      },
+    ],
   },
   career: {
     min: 30,
@@ -18,6 +51,38 @@ export const trainingInfo = {
     icon: "",
     color: "bg-emerald-300",
     textColor: "text-emerald-600",
+    levels: [
+      {
+        level: 1,
+        min: 0,
+        max: 30,
+        title: "Rookie",
+      },
+      {
+        level: 2,
+        min: 30,
+        max: 50,
+        title: "Apprentice",
+      },
+      {
+        level: 3,
+        min: 50,
+        max: 80,
+        title: "Portfolio Master",
+      },
+      {
+        level: 4,
+        min: 80,
+        max: 115,
+        title: "Workoholic",
+      },
+      {
+        level: 5,
+        min: 115,
+        max: 140,
+        title: "The Echomaker",
+      },
+    ],
   },
   connection: {
     min: 10,
@@ -25,6 +90,38 @@ export const trainingInfo = {
     icon: "",
     color: "bg-indigo-300",
     textColor: "text-indigo-600",
+    levels: [
+      {
+        level: 1,
+        min: 0,
+        max: 10,
+        title: "Introvert",
+      },
+      {
+        level: 2,
+        min: 10,
+        max: 15,
+        title: "Ambivert",
+      },
+      {
+        level: 3,
+        min: 15,
+        max: 25,
+        title: "Extrovert",
+      },
+      {
+        level: 4,
+        min: 25,
+        max: 35,
+        title: "The Guy",
+      },
+      {
+        level: 5,
+        min: 35,
+        max: 60,
+        title: "The Echomaker",
+      },
+    ],
   },
 };
 

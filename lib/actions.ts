@@ -178,6 +178,7 @@ const initializeAssistant = async (
 const updateAssistants = async () => {
   const address = await getUserAddress();
   const userInfo: User | null = await getUser(address);
+  const prevInfoFileId = userInfo?.infoFileId;
 
   let mergedData: UserObject = {
     address,
@@ -230,6 +231,9 @@ const updateAssistants = async () => {
       },
     }
   );
+
+  // REMOVE PREV INFOFILE
+  await openai.files.del(prevInfoFileId!);
 };
 
 export const generateQuestions = async () => {

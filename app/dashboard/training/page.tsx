@@ -1,9 +1,10 @@
 "use client";
 
+import CharacterCard from "@/components/training/character-card";
 import QuestionCard from "@/components/training/question-card";
 import { generateQuestions, saveAnswers } from "@/lib/actions";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { getCharacterStats } from "@/lib/data";
+import { useEffect, useState } from "react";
 
 const defaultQuestions = [
   {
@@ -103,6 +104,17 @@ export default function TrainingPage() {
   );
   const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
   const [skipped, setSkipped] = useState<Question[]>([]);
+  const [character, setCharacter] = useState<CharacterInfo | null>(null);
+  const [characterLoading, setCharacterLoading] = useState(false);
+
+  async function updateCharacter() {
+    const charInfo = await getCharacterStats();
+    setCharacter(charInfo);
+  }
+
+  useEffect(() => {
+    updateCharacter();
+  }, []);
 
   function nextQuestion(currentQuestion: Question) {
     setQuestions((prev) =>
@@ -143,6 +155,7 @@ export default function TrainingPage() {
 
   return (
     <div>
+      <CharacterCard character={character} loading={characterLoading} />
       <h1>training</h1>
       <button onClick={generateQuestionsHandler}>
         {loading ? "Loading..." : "Generate questions"}
