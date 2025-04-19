@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import Providers from "@/services/providers";
-import ConnectButton from "@/components/layout/connect-button";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -22,12 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${manrope.className} antialiased`}>
-        <Providers>
-          <header>
-            <ConnectButton />
-          </header>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
