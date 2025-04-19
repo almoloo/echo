@@ -18,6 +18,8 @@ import path from "path";
 import { TextContentBlock } from "openai/resources/beta/threads/messages.mjs";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth-options";
+import { decryptId } from "@/lib/server-utils";
+import { ObjectId } from "mongodb";
 
 const getUserAddress = async () => {
   const session = await getServerSession(authOptions);
@@ -86,6 +88,8 @@ export const editUser = async (userInfo: UserInfo) => {
   );
 };
 
+// ---------- QUESTIONS AND ANSWERS
+
 export const saveAnswers = async (
   answers: QuestionAnswer[],
   skipped: Question[]
@@ -104,6 +108,45 @@ export const saveAnswers = async (
   const skippedRes = await skippedCollection.insertMany(modifiedSkipped);
 
   await updateAssistants();
+};
+
+export const modifyAnswer = async (id: string, newAnswer: string) => {
+  const decryptedId = decryptId(id);
+  const collection = db.collection("answers");
+  const res = await collection.updateOne(
+    { _id: new ObjectId(decryptedId) },
+    {
+      $set: { answer: newAnswer },
+    }
+  );
+  await updateAssistants();
+  return res.acknowledged;
+};
+
+export const removeAnswer = async (id: string) => {
+  const decryptedId = decryptId(id);
+  const collection = db.collection("answers");
+  const res = await collection.deleteOne({ _id: new ObjectId(decryptedId) });
+  await updateAssistants();
+  return res.acknowledged;
+};
+
+export const markAnswerAsSkipped = async (id: string) => {
+  const decryptedId = decryptId(id);
+  const answerscollection = db.collection("answers");
+  const delRes = await answerscollection.findOneAndDelete({
+    _id: new ObjectId(decryptedId),
+  });
+  const question = delRes as unknown as Question;
+
+  const skippedcollection = db.collection("skipped");
+  const res = await skippedcollection.insertOne({
+    type: question.type,
+    question: question.question,
+  });
+
+  await updateAssistants();
+  return res.acknowledged;
 };
 
 // ---------- AI ACTIONS
