@@ -1,4 +1,4 @@
-"use server";
+// SERVER ONLY – Do not import this file in client components
 
 import crypto from "crypto";
 
@@ -9,7 +9,7 @@ const secretKey = crypto
   .digest();
 const ivLength = 16;
 
-export async function encryptId(id: string) {
+export function encryptId(id: string) {
   const iv = crypto.randomBytes(ivLength);
   const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
   let encrypted = cipher.update(id, "utf-8", "hex");
@@ -17,7 +17,7 @@ export async function encryptId(id: string) {
   return iv.toString("hex") + ":" + encrypted;
 }
 
-export async function decryptId(encryptedId: string) {
+export function decryptId(encryptedId: string) {
   const [ivHex, encrypted] = encryptedId.split(":");
   const iv = Buffer.from(ivHex, "hex");
   const decipher = crypto.createDecipheriv(algorithm, secretKey, iv);

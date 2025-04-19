@@ -1,6 +1,7 @@
 type TrainingAttribute = "identity" | "career" | "connection";
 
 interface Question {
+  id?: string;
   type: TrainingAttribute;
   question: string;
 }
