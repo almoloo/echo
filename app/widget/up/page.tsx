@@ -27,7 +27,9 @@ export default function UpWidgetPage() {
 
   useEffect(() => {
     provider = createClientUPProvider();
+  }, []);
 
+  useEffect(() => {
     async function init() {
       try {
         const _accounts = provider.accounts as Array<`0x${string}`>;
