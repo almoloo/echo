@@ -82,10 +82,7 @@ export const createUser = async (address: string) => {
 export const editUser = async (userInfo: UserInfo) => {
   const address = await getUserAddress();
   const collection = db.collection("users");
-  const res = await collection.updateOne(
-    { address },
-    { $set: { info: userInfo } }
-  );
+  await collection.updateOne({ address }, { $set: { info: userInfo } });
 };
 
 // ---------- QUESTIONS AND ANSWERS
@@ -104,8 +101,8 @@ export const saveAnswers = async (
   const answersCollection = db.collection("answers");
   const skippedCollection = db.collection("skipped");
 
-  const answersRes = await answersCollection.insertMany(modifiedAnswers);
-  const skippedRes = await skippedCollection.insertMany(modifiedSkipped);
+  await answersCollection.insertMany(modifiedAnswers);
+  await skippedCollection.insertMany(modifiedSkipped);
 
   await updateAssistants();
 };
@@ -133,8 +130,8 @@ export const removeAnswer = async (id: string) => {
 
 export const markAnswerAsSkipped = async (id: string) => {
   const decryptedId = decryptId(id);
-  const answerscollection = db.collection("answers");
-  const delRes = await answerscollection.findOneAndDelete({
+  const answersCollection = db.collection("answers");
+  const delRes = await answersCollection.findOneAndDelete({
     _id: new ObjectId(decryptedId),
   });
   const question = delRes as unknown as Question;
@@ -143,6 +140,35 @@ export const markAnswerAsSkipped = async (id: string) => {
   const res = await skippedcollection.insertOne({
     type: question.type,
     question: question.question,
+    address: question.address,
+  });
+
+  await updateAssistants();
+  return res.acknowledged;
+};
+
+export const removeSkipped = async (id: string) => {
+  const decryptedId = decryptId(id);
+  const collection = db.collection("skipped");
+  const res = await collection.deleteOne({ _id: new ObjectId(decryptedId) });
+  await updateAssistants();
+  return res.acknowledged;
+};
+
+export const answerSkipped = async (id: string, answer: string) => {
+  const decryptedId = decryptId(id);
+  const skippedCollection = db.collection("skipped");
+  const delRes = await skippedCollection.findOneAndDelete({
+    _id: new ObjectId(decryptedId),
+  });
+  const question = delRes as unknown as Question;
+
+  const answersCollection = db.collection("answers");
+  const res = await answersCollection.insertOne({
+    type: question.type,
+    question: question.question,
+    answer: answer,
+    address: question.address,
   });
 
   await updateAssistants();

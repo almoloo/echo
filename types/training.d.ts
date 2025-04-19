@@ -4,6 +4,7 @@ interface Question {
   id?: string;
   type: TrainingAttribute;
   question: string;
+  address?: string;
 }
 
 interface QuestionAnswer extends Question {
