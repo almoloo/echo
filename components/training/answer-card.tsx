@@ -1,4 +1,8 @@
-import { markAnswerAsSkipped, modifyAnswer, removeAnswer } from "@/lib/actions";
+import {
+  markAnswerAsSkipped,
+  modifyAnswer,
+  removeAnswer,
+} from "@/lib/actions/training";
 
 interface AnswerCardProp {
   answer: QuestionAnswer;

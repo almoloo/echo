@@ -1,7 +1,7 @@
 import ProfileForm from "@/components/profile/profile-form";
-import { editUser } from "@/lib/actions";
+import { editUser } from "@/lib/actions/user";
 import { authOptions } from "@/lib/auth-options";
-import { getUser } from "@/lib/data";
+import { getUser } from "@/lib/data/user";
 import { getServerSession } from "next-auth";
 import Form from "next/form";
 

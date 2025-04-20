@@ -1,6 +1,6 @@
 "use client";
 
-import { getCharacterStats } from "@/lib/data";
+import { getCharacterStats } from "@/lib/data/user";
 import { useEffect, useState } from "react";
 
 interface CharacterCardProps {

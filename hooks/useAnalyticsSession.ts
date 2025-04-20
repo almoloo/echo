@@ -11,12 +11,14 @@ function getOrCreateSessionId() {
 
 export function useAnalyticsSession(walletAddress?: string) {
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [docId, setDocId] = useState<string | null>(null);
   const [hasSyncedWallet, setHasSyncedWallet] = useState(false);
 
   useEffect(() => {
     const id = getOrCreateSessionId();
     setSessionId(id);
     // SEND INIT REQUEST
+    setDocId("...");
     console.log("🎈 INIT ANALYTICS REQUEST");
   }, []);
 

@@ -1,5 +1,4 @@
 import { zodResponseFormat } from "openai/helpers/zod";
-import { title } from "process";
 import { z } from "zod";
 
 export const defaultAvatar = "QmQTL6Xbewa475QGvRzsNRgMUdeEF2iJqZZbt9mWi9Gtvy";

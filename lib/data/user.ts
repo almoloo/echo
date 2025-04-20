@@ -1,20 +1,10 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { ERC725 } from "@erc725/erc725.js";
+import ERC725 from "@erc725/erc725.js";
 import profileSchema from "@erc725/erc725.js/schemas/LSP3ProfileMetadata.json";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth-options";
+import { db } from "@/lib/db";
+import { getUserAnswers } from "@/lib/data/training";
 import { identityStatsInfo } from "@/lib/constants";
-import { encryptId } from "@/lib/server-utils";
-
-const getUserAddress = async () => {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) throw new Error("You need to be signed in!");
-  return session.user.address;
-};
-
-// ---------- USER DATA
 
 export const fetchUPMetadata = async (address: string) => {
   const erc725js = new ERC725(
@@ -104,49 +94,4 @@ export const getCharacterStats = async () => {
       level: connectionLevel,
     },
   } as CharacterInfo;
-};
-
-// ---------- QUESTIONS AND ANSWERS
-
-export const getUserAnswers = async () => {
-  const address = await getUserAddress();
-  const answersCollection = db.collection("answers");
-
-  const answers = await answersCollection
-    .find({
-      address,
-    })
-    .toArray();
-
-  const encryptedArray = answers.map((elem) => {
-    return {
-      id: encryptId(elem._id.toString()),
-      type: elem.type,
-      question: elem.question,
-      answer: elem.answer,
-    };
-  });
-
-  return encryptedArray as unknown as QuestionAnswer[];
-};
-
-export const getUserSkipped = async () => {
-  const address = await getUserAddress();
-  const skippedCollection = db.collection("skipped");
-
-  const skipped = await skippedCollection
-    .find({
-      address,
-    })
-    .toArray();
-
-  const encryptedArray = skipped.map((elem) => {
-    return {
-      id: encryptId(elem._id.toString()),
-      type: elem.type,
-      question: elem.question,
-    };
-  });
-
-  return encryptedArray as unknown as Question[];
 };

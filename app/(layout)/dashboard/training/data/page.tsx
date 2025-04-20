@@ -2,7 +2,7 @@
 
 import AnswerCard from "@/components/training/answer-card";
 import SkippedCard from "@/components/training/skipped-card";
-import { getUserAnswers, getUserSkipped } from "@/lib/data";
+import { getUserAnswers, getUserSkipped } from "@/lib/data/training";
 import { useEffect, useState } from "react";
 
 export default function AvailableDataPage() {

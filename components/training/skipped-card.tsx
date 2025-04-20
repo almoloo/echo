@@ -1,4 +1,4 @@
-import { answerSkipped, removeSkipped } from "@/lib/actions";
+import { answerSkipped, removeSkipped } from "@/lib/actions/training";
 
 interface SkippedCardProp {
   question: Question;

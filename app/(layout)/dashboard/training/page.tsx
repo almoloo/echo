@@ -2,8 +2,9 @@
 
 import CharacterCard from "@/components/training/character-card";
 import QuestionCard from "@/components/training/question-card";
-import { generateQuestions, saveAnswers } from "@/lib/actions";
-import { getCharacterStats } from "@/lib/data";
+import { saveAnswers } from "@/lib/actions/training";
+import { generateQuestions } from "@/lib/actions/ai";
+import { getCharacterStats } from "@/lib/data/user";
 import { useEffect, useState } from "react";
 
 const defaultQuestions = [
