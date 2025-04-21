@@ -13,6 +13,9 @@ export const initVisitSession = async (data: VisitData) => {
 
 export const updateVisitSession = async (id: string, data: VisitData) => {
   const collection = db.collection("visits");
-  const res = await collection.updateOne({ _id: new ObjectId(id) }, data);
+  const res = await collection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { wallet: data.wallet } }
+  );
   return res.acknowledged;
 };
