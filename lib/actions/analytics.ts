@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { ObjectId } from "mongodb";
 
 export const initVisitSession = async (data: VisitData) => {
+  const newData = { ...data, date: Date.now() };
   const collection = db.collection("visits");
   const res = await collection.insertOne(data);
   const insertedId = await res.insertedId.toString();

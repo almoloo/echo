@@ -14,10 +14,25 @@ export function useAnalyticsSession(
   walletAddress?: string,
   visitor?: VisitData
 ) {
+  const [ipInfo, setIpInfo] = useState<IPInfo | undefined>(undefined);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [docId, setDocId] = useState<string | null>(null);
   const [hasSyncedWallet, setHasSyncedWallet] = useState(false);
   const [hasSessionInit, setHasSessionInit] = useState(false);
+
+  useEffect(() => {
+    async function getIpInfo() {
+      const res = await fetch("https://ipapi.co/json/");
+      const resJson = await res.json();
+      setIpInfo({
+        city: resJson.city,
+        country: resJson.country_name,
+        ip: resJson.ip,
+      });
+    }
+
+    getIpInfo();
+  }, []);
 
   useEffect(() => {
     const id = getOrCreateSessionId();
@@ -25,13 +40,13 @@ export function useAnalyticsSession(
   }, []);
 
   useEffect(() => {
-    if (!sessionId || !visitor || !visitor.location || hasSessionInit) return;
+    if (!sessionId || !visitor || !ipInfo || hasSessionInit) return;
 
     async function init() {
       let visitorInfo: VisitData = {
         ...visitor,
-        date: Date.now(),
         sessionId: sessionId!,
+        location: ipInfo,
       };
 
       setHasSessionInit(true);
@@ -42,7 +57,7 @@ export function useAnalyticsSession(
     }
 
     init();
-  }, [sessionId, visitor]);
+  }, [sessionId, ipInfo, visitor]);
 
   useEffect(() => {
     if (!sessionId || !walletAddress || !visitor || !docId || hasSyncedWallet)
