@@ -1,14 +1,20 @@
 "use client";
 
 import { useAnalyticsSession } from "@/hooks/useAnalyticsSession";
+import { useChatBot } from "@/hooks/useChatBot";
 import { useUniversalProfile } from "@/hooks/useUniversalProfile";
 import { useEffect, useState } from "react";
 
 export default function UpWidgetPage() {
+  const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
+  const { isReady, welcomeMessage } = useChatBot(
+    contextAccounts[0],
+    profileConnected
+  );
+
   const [visitorInfo, setVisitorInfo] = useState<VisitData | undefined>(
     undefined
   );
-  const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
   const wallet = profileConnected ? accounts[0] : undefined;
   const { sessionId } = useAnalyticsSession(wallet, visitorInfo);
 
@@ -30,6 +36,8 @@ export default function UpWidgetPage() {
       <pre>
         <code>{JSON.stringify(visitorInfo)}</code>
       </pre>
+      <div>{isReady && "READY!"}</div>
+      <div>{welcomeMessage}</div>
     </div>
   );
 }

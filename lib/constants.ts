@@ -203,6 +203,17 @@ Do not include any explanations or text outside the array.`,
   responseFormat: zodResponseFormat(trainingResponseFormat, "training_format"),
 };
 
+export const generateInitChatPrompt = () => {
+  return `
+  If you have not yet, read the current JSON file you have to be ready for the user's questions.
+  Respond to this message in the following JSON format:
+  [{
+    welcomeMessage: string; // greet the user and ask what they want to know about the profile owner (with their name).
+    suggested: string[]; // Suggest 3 personalized example questions based on the data you know.
+  }]
+  `;
+};
+
 export const generateQuestionPrompt = (
   answers?: QuestionAnswer[],
   skipped?: string[]
