@@ -24,10 +24,14 @@ export function useChatBot(address?: string, connected?: boolean) {
     if (!assistantId || !connected || initiated) return;
 
     async function init() {
-      const res = await createChatSession(assistantId!);
-      setChatThreadId(res.threadId);
-      setWelcomeMessage(res.message);
-      setIsReady(true);
+      try {
+        const res = await createChatSession(assistantId!);
+        setChatThreadId(res.threadId);
+        setWelcomeMessage(res.message);
+        setIsReady(true);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     init();
