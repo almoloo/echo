@@ -13,7 +13,7 @@ export default function UpWidgetPage() {
   );
   const wallet = profileConnected ? accounts[0] : undefined;
   const { sessionId } = useAnalyticsSession(wallet, visitorInfo);
-  const { isReady, welcomeMessage, assistantId } = useChatBot(
+  const { isReady, messages, suggestions, assistantId } = useChatBot(
     contextAccounts[0],
     profileConnected
   );
@@ -38,7 +38,8 @@ export default function UpWidgetPage() {
       </pre>
       <div>assistant id: {assistantId}</div>
       <div>{isReady && "READY!"}</div>
-      <div>{welcomeMessage}</div>
+      <div>{messages[0].text}</div>
+      <div>{JSON.stringify(suggestions)}</div>
     </div>
   );
 }

@@ -7,7 +7,8 @@ export function useChatBot(address?: string, connected?: boolean) {
   const [assistantId, setAssistantId] = useState<string | null>(null);
   const [chatThreadId, setChatThreadId] = useState<string | null>(null);
   const [initiated, setInitiated] = useState(false);
-  const [welcomeMessage, setWelcomeMessage] = useState<string | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     if (!address || initiated) return;
@@ -34,9 +35,14 @@ export function useChatBot(address?: string, connected?: boolean) {
       console.log("🎈 here 4");
       try {
         const res = await createChatSession(assistantId!);
-        console.log("🎈 here 5");
+        const message = JSON.parse(res.message).response;
         setChatThreadId(res.threadId);
-        setWelcomeMessage(res.message);
+        setSuggestions(message.response.suggested);
+        let welcomeMessage: Message = {
+          from: "Assistant",
+          text: message.response.welcomeMessage,
+        };
+        setMessages((prev) => [...prev, welcomeMessage]);
         setIsReady(true);
       } catch (error) {
         console.error(error);
@@ -47,5 +53,5 @@ export function useChatBot(address?: string, connected?: boolean) {
     init();
   }, [assistantId, connected, initiated]);
 
-  return { isReady, welcomeMessage, assistantId };
+  return { isReady, messages, suggestions, assistantId };
 }
