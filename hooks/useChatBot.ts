@@ -36,6 +36,7 @@ export function useChatBot(address?: string, connected?: boolean) {
       try {
         const res = await createChatSession(assistantId!);
         const message = JSON.parse(res.message).response;
+        console.log(message);
         setChatThreadId(res.threadId);
         setSuggestions(message.response.suggested);
         let welcomeMessage: Message = {
