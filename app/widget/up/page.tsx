@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 export default function UpWidgetPage() {
   const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
-  const { isReady, welcomeMessage } = useChatBot(
+  const { isReady, welcomeMessage, assistantId } = useChatBot(
     contextAccounts[0],
     profileConnected
   );
@@ -36,6 +36,7 @@ export default function UpWidgetPage() {
       <pre>
         <code>{JSON.stringify(visitorInfo)}</code>
       </pre>
+      <div>assistant id: {assistantId}</div>
       <div>{isReady && "READY!"}</div>
       <div>{welcomeMessage}</div>
     </div>

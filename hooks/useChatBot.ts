@@ -37,5 +37,5 @@ export function useChatBot(address?: string, connected?: boolean) {
     init();
   }, [assistantId, connected, initiated]);
 
-  return { isReady, welcomeMessage };
+  return { isReady, welcomeMessage, assistantId };
 }
