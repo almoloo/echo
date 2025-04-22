@@ -11,10 +11,12 @@ export function useChatBot(address?: string, connected?: boolean) {
 
   useEffect(() => {
     if (!address || initiated) return;
+    console.log("🎈 here 1");
 
     async function init() {
       const userInfo = await getUser(address!);
       setAssistantId(userInfo?.assistantId);
+      console.log("🎈 here 2");
     }
 
     init();
@@ -22,15 +24,19 @@ export function useChatBot(address?: string, connected?: boolean) {
 
   useEffect(() => {
     if (!assistantId || !connected || initiated) return;
+    console.log("🎈 here 3");
 
     async function init() {
+      console.log("🎈 here 4");
       try {
         const res = await createChatSession(assistantId!);
+        console.log("🎈 here 5");
         setChatThreadId(res.threadId);
         setWelcomeMessage(res.message);
         setIsReady(true);
       } catch (error) {
         console.error(error);
+        console.log("🎈 here 6");
       }
     }
 

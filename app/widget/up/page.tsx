@@ -7,16 +7,16 @@ import { useEffect, useState } from "react";
 
 export default function UpWidgetPage() {
   const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
-  const { isReady, welcomeMessage, assistantId } = useChatBot(
-    contextAccounts[0],
-    profileConnected
-  );
 
   const [visitorInfo, setVisitorInfo] = useState<VisitData | undefined>(
     undefined
   );
   const wallet = profileConnected ? accounts[0] : undefined;
   const { sessionId } = useAnalyticsSession(wallet, visitorInfo);
+  const { isReady, welcomeMessage, assistantId } = useChatBot(
+    contextAccounts[0],
+    profileConnected
+  );
 
   useEffect(() => {
     setVisitorInfo({
