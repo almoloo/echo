@@ -15,6 +15,7 @@ export function useChatBot(address?: string, connected?: boolean) {
 
     async function init() {
       const userInfo = await getUser(address!);
+      console.log("🎈 userInfo: ", userInfo);
       setAssistantId(userInfo?.assistantId);
       console.log("🎈 here 2");
       console.log("🎈 assistantid:", assistantId);
