@@ -38,7 +38,7 @@ export default function UpWidgetPage() {
       </pre>
       <div>assistant id: {assistantId}</div>
       <div>{isReady && "READY!"}</div>
-      <div>{messages[0].text}</div>
+      <div>{JSON.stringify(messages)}</div>
       <div>{JSON.stringify(suggestions)}</div>
     </div>
   );
