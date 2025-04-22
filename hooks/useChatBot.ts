@@ -11,7 +11,7 @@ export function useChatBot(address?: string, connected?: boolean) {
 
   useEffect(() => {
     if (!address || initiated) return;
-    console.log("🎈 here 1");
+    console.log("🎈 here 1", address);
 
     async function init() {
       const userInfo = await getUser(address!);
