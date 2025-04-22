@@ -9,7 +9,7 @@ import { identityStatsInfo } from "@/lib/constants";
 export const fetchUPMetadata = async (address: string) => {
   const erc725js = new ERC725(
     profileSchema,
-    address,
+    address.toLowerCase(),
     "https://rpc.mainnet.lukso.network",
     {
       ipfsGateway: "https://api.universalprofile.cloud/ipfs/",
@@ -28,7 +28,7 @@ export const getUser = async (address: string) => {
 
   const collection = db.collection("users");
   const user = await collection.findOne({
-    address,
+    address: address.toLowerCase(),
   });
 
   return user;
