@@ -41,10 +41,10 @@ export function useChatBot(address?: string, connected?: boolean) {
         }
         console.log(message);
         setChatThreadId(res.threadId);
-        setSuggestions(message.response.suggested);
+        setSuggestions(message.suggested);
         let welcomeMessage: Message = {
           from: "Assistant",
-          text: message.response.welcomeMessage,
+          text: message.welcomeMessage,
         };
         setMessages((prev) => [...prev, welcomeMessage]);
         setIsReady(true);
