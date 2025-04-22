@@ -17,6 +17,9 @@ export function useChatBot(address?: string, connected?: boolean) {
       const userInfo = await getUser(address!);
       setAssistantId(userInfo?.assistantId);
       console.log("🎈 here 2");
+      console.log("🎈 assistantid:", assistantId);
+      console.log("🎈 connected:", connected);
+      console.log("🎈 initiated:", initiated);
     }
 
     init();
