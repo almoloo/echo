@@ -161,7 +161,38 @@ Only return a valid JSON object using this structure:
 "answer": "Assistant's response here"
 },
 
-Do not include any explanations or text outside the array.`,
+Do not include any explanations or text outside the array.
+If you can't answer a question, in addition to saying that you don't know thae answer, add the function key to the response object:
+{
+  ... // Like above example
+  function: {
+    name: 'save_question',
+    value: {
+      type: "identity" | "career" | "connection";
+      question: string;
+    }
+}
+}
+You can also receive messages on behalf of the owner. Upon receiving a message for the profile owner, In addition to saying that you'll send the message to the owner, add this function key to the response object:
+{
+  ... // Like above example
+  function: {
+    name: 'send_message';
+    value: '...'; // message that the user wants to send
+  },
+}
+If a user wants to donate or transfer some money to the user ask for the amount in LYX or USD, if the user enters USD amount do the calculation and convert it to LYX. confirm the amount and currency with the user and then add this function key to the response object:
+{
+  ... // Like above example
+  function: {
+    name: 'send_amount',
+    value: {
+      amount: number;
+      currency: "LYX" | "USD";
+    }
+  },
+}
+`,
   description:
     "Acts as the user and answers questions based on their provided profile data. Avoids hallucinations and steers conversations back to the user.",
   responseFormat: zodResponseFormat(echoResponseFormat, "echo_format"),
@@ -212,46 +243,4 @@ export const generateInitChatPrompt = () => {
     suggested: string[]; // Suggest 3 personalized example questions based on the data you have.
   }
   `;
-};
-
-export const generateQuestionPrompt = (
-  answers?: QuestionAnswer[],
-  skipped?: string[]
-) => {
-  return `
-Generate 18 new questions based on all information provided so far, including the recent answers if available.
-
-Distribution:
-- Identity:  2/6th of questions
-- Career: 3/6th of questions
-- Connection: 1/6th of questions
-
-Format as JSON array:
-[
-  {
-    "type": "identity|career|connection",
-    "question": "Question text"
-  }
-]
-
-Do NOT ask any previously skipped questions.
-
-${
-  answers
-    ? `
-    Recent answers:
-    ${JSON.stringify(answers)}
-`
-    : ""
-}
-
-${
-  skipped
-    ? `
-    Recently skipped questions:
-    ${JSON.stringify(skipped)}
-    `
-    : ""
-}
-`;
 };

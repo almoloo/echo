@@ -13,10 +13,8 @@ export default function UpWidgetPage() {
   );
   const wallet = profileConnected ? accounts[0] : undefined;
   const { sessionId } = useAnalyticsSession(wallet, visitorInfo);
-  const { isReady, messages, suggestions, assistantId } = useChatBot(
-    contextAccounts[0],
-    profileConnected
-  );
+  const { isReady, messages, suggestions, assistantId, askQuestion } =
+    useChatBot(contextAccounts[0], profileConnected);
 
   useEffect(() => {
     setVisitorInfo({
@@ -36,6 +34,10 @@ export default function UpWidgetPage() {
       <pre>
         <code>{JSON.stringify(visitorInfo)}</code>
       </pre>
+      <form action={askQuestion}>
+        <input type="text" name="q" className="border" />
+        <button type="submit">Ask</button>
+      </form>
       <div>assistant id: {assistantId}</div>
       <div>{isReady && "READY!"}</div>
       <div>{JSON.stringify(messages)}</div>

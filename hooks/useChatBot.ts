@@ -1,4 +1,7 @@
-import { createChatSession } from "@/lib/actions/chat-bot";
+import {
+  askQuestionFromAssistant,
+  createChatSession,
+} from "@/lib/actions/chat-bot";
 import { getUser } from "@/lib/data/user";
 import { useEffect, useState } from "react";
 
@@ -12,16 +15,10 @@ export function useChatBot(address?: string, connected?: boolean) {
 
   useEffect(() => {
     if (!address || initiated) return;
-    console.log("🎈 here 1", address);
 
     async function init() {
       const userInfo = await getUser(address!);
-      console.log("🎈 userInfo: ", userInfo);
       setAssistantId(userInfo?.assistantId);
-      console.log("🎈 here 2");
-      console.log("🎈 assistantid:", assistantId);
-      console.log("🎈 connected:", connected);
-      console.log("🎈 initiated:", initiated);
     }
 
     init();
@@ -29,17 +26,14 @@ export function useChatBot(address?: string, connected?: boolean) {
 
   useEffect(() => {
     if (!assistantId || !connected || initiated) return;
-    console.log("🎈 here 3");
 
     async function init() {
-      console.log("🎈 here 4");
       try {
         const res = await createChatSession(assistantId!);
         let message = JSON.parse(res.message).response;
         if (typeof message === "string") {
           message = JSON.parse(message);
         }
-        console.log(message);
         setChatThreadId(res.threadId);
         setSuggestions(message.suggested);
         let welcomeMessage: Message = {
@@ -50,12 +44,36 @@ export function useChatBot(address?: string, connected?: boolean) {
         setIsReady(true);
       } catch (error) {
         console.error(error);
-        console.log("🎈 here 6");
       }
     }
 
     init();
   }, [assistantId, connected, initiated]);
 
-  return { isReady, messages, suggestions, assistantId };
+  async function askQuestion(formData: FormData) {
+    const question = formData.get("q")?.toString();
+    try {
+      if (!question || !assistantId || !chatThreadId)
+        throw new Error("All the parameters are required!");
+
+      const res = await askQuestionFromAssistant(
+        question,
+        assistantId,
+        chatThreadId
+      );
+
+      let message = JSON.parse(res!).response;
+      if (typeof message === "string") {
+        message = JSON.parse(message);
+      }
+      console.log("🎈", message);
+      return message;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function sendAmount(lyxAmount: number) {}
+
+  return { isReady, messages, suggestions, askQuestion, assistantId };
 }
