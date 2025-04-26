@@ -162,7 +162,7 @@ Only return a valid JSON object using this structure:
 },
 
 Do not include any explanations or text outside the array.
-If you can't answer a question, in addition to saying that you don't know thae answer, add the function key to the response object:
+If you can't answer a question, in addition to saying that you don't know the answer, if you decide the answer to this question is relavent to the user add the function key to the response object:
 {
   ... // Like above example
   function: {
