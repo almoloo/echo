@@ -6,6 +6,7 @@ import { useState } from "react";
 import { createWalletClient, custom, hashMessage } from "viem";
 import { lukso } from "viem/chains";
 import { createSiweMessage } from "viem/siwe";
+import { Button } from "@/components/ui/button";
 
 export default function ConnectButton() {
   const { data: session } = useSession();
@@ -79,7 +80,7 @@ export default function ConnectButton() {
     <>
       <nav>
         list
-        <button onClick={handleLuksoSignOut}>Sign out</button>
+        <Button onClick={handleLuksoSignOut}>Sign out</Button>
       </nav>
     </>
   ) : (
