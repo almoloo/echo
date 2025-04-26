@@ -52,16 +52,21 @@ export const authOptions: NextAuthOptions = {
           // CHECK IF USER EXISTS IN DATABASE
           const user = await getUser(credentials.address);
           let userID: string;
+          let avatar: string;
           if (user) {
             // FETCH ID
             userID = user._id.toString();
+            avatar = user.info.avatar;
           } else {
             // CREATE USER
-            userID = (await createUser(credentials.address)).toString();
+            const newUser = await createUser(credentials.address);
+            userID = newUser.id.toString();
+            avatar = newUser.avatar!;
           }
           return {
             id: userID,
             address: credentials.address,
+            image: avatar,
           };
         } catch (error) {
           console.error("Verification Error: ", error);

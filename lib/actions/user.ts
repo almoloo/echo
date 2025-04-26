@@ -60,7 +60,7 @@ export const createUser = async (address: string) => {
 
   const collection = db.collection("users");
   const res = await collection.insertOne({ ...newUserData });
-  return res.insertedId;
+  return { id: res.insertedId, avatar: newUserData.info?.avatar };
 };
 
 export const editUser = async (userInfo: UserInfo) => {

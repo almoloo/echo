@@ -59,6 +59,13 @@ export default function ProfileForm(props: ProfileFormProps) {
         <TagItem tag={tag} index={i} key={`tag-item-${i}`} />
       ))}
 
+      <input
+        type="text"
+        name="avatar"
+        placeholder="avatar"
+        defaultValue={props.avatar}
+      />
+
       <button type="submit">Save {pending && "pending..."}</button>
     </>
   );
