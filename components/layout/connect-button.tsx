@@ -77,7 +77,10 @@ export default function ConnectButton() {
 
   return session?.user ? (
     <>
-      <button onClick={handleLuksoSignOut}>Sign out</button>
+      <nav>
+        list
+        <button onClick={handleLuksoSignOut}>Sign out</button>
+      </nav>
     </>
   ) : (
     <>

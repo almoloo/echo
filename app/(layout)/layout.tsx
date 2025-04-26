@@ -1,4 +1,4 @@
-import ConnectButton from "@/components/layout/connect-button";
+import Header from "@/components/layout/header";
 
 export default function RootLayout({
   children,
@@ -7,9 +7,7 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <header>
-        <ConnectButton />
-      </header>
+      <Header />
       {children}
     </>
   );
