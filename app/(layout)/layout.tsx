@@ -1,3 +1,4 @@
+import Footer from "@/components/layout/footer";
 import Header from "@/components/layout/header";
 
 export default function RootLayout({
@@ -8,7 +9,8 @@ export default function RootLayout({
   return (
     <>
       <Header />
-      {children}
+      <article className="flex flex-col grow">{children}</article>
+      <Footer />
     </>
   );
 }

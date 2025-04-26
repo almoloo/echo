@@ -2,7 +2,7 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createWalletClient, custom, hashMessage } from "viem";
 import { lukso } from "viem/chains";
 import { createSiweMessage } from "viem/siwe";
@@ -22,18 +22,27 @@ import {
   ChevronDownIcon,
   DatabaseIcon,
   LayoutDashboardIcon,
+  LoaderCircleIcon,
   LogOutIcon,
   MailIcon,
   MessageCircleQuestionIcon,
+  WalletIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { convertIPFSHash } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function ConnectButton() {
   const { data: session } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!error || error === "") return;
+    toast(error);
+  }, [error]);
 
   const handleLuksoSignIn = async () => {
     setIsLoading(true);
@@ -86,7 +95,6 @@ export default function ConnectButton() {
         setError("Unknown error occurred during sign-in");
       }
     } catch (error) {
-      console.error("Sign-in error:", error);
       setError(error instanceof Error ? error.message : "An error occured!");
     } finally {
       setIsLoading(false);
@@ -98,11 +106,6 @@ export default function ConnectButton() {
   };
 
   return session?.user ? (
-    // <>
-    //   <nav>
-    //     list
-    //   </nav>
-    // </>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
@@ -110,22 +113,17 @@ export default function ConnectButton() {
           size="lg"
           className="flex items-center gap-2 py-2 h-[unset]"
         >
-          <Avatar>
-            <AvatarImage
-              src={`https://api.universalprofile.cloud/ipfs/${session.user.image?.replace(
-                "ipfs://",
-                ""
-              )}`}
-            />
+          <Avatar className="shrink-0">
+            <AvatarImage src={convertIPFSHash(session.user.image!)} />
             <AvatarFallback>
               {session.user.name?.substring(0, 2).toUpperCase() || "UU"}
             </AvatarFallback>
           </Avatar>
           <span className="text-xs text-left">
-            Welcome back,
+            Welcome home,
             <strong className="block">{session.user.name}</strong>
           </span>
-          <ChevronDownIcon className="w-3 h-3" />
+          <ChevronDownIcon className="w-3 h-3 shrink-0" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-52">
@@ -176,14 +174,14 @@ export default function ConnectButton() {
     </DropdownMenu>
   ) : (
     <>
-      <button
-        className="bg-sky-400"
-        disabled={isLoading}
-        onClick={handleLuksoSignIn}
-      >
-        {isLoading ? "Connecting..." : "Connect with UP"}
-      </button>
-      {error && <p className="text-red-500">{error}</p>}
+      <Button size="lg" disabled={isLoading} onClick={handleLuksoSignIn}>
+        {isLoading ? (
+          <LoaderCircleIcon className="animate-spin" />
+        ) : (
+          <WalletIcon />
+        )}
+        Sign in
+      </Button>
     </>
   );
 }
