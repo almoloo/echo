@@ -7,6 +7,27 @@ import { createWalletClient, custom, hashMessage } from "viem";
 import { lukso } from "viem/chains";
 import { createSiweMessage } from "viem/siwe";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  BotMessageSquareIcon,
+  ChevronDownIcon,
+  DatabaseIcon,
+  LayoutDashboardIcon,
+  LogOutIcon,
+  MailIcon,
+  MessageCircleQuestionIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export default function ConnectButton() {
   const { data: session } = useSession();
@@ -77,12 +98,82 @@ export default function ConnectButton() {
   };
 
   return session?.user ? (
-    <>
-      <nav>
-        list
-        <Button onClick={handleLuksoSignOut}>Sign out</Button>
-      </nav>
-    </>
+    // <>
+    //   <nav>
+    //     list
+    //   </nav>
+    // </>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          size="lg"
+          className="flex items-center gap-2 py-2 h-[unset]"
+        >
+          <Avatar>
+            <AvatarImage
+              src={`https://api.universalprofile.cloud/ipfs/${session.user.image?.replace(
+                "ipfs://",
+                ""
+              )}`}
+            />
+            <AvatarFallback>
+              {session.user.name?.substring(0, 2).toUpperCase() || "UU"}
+            </AvatarFallback>
+          </Avatar>
+          <span className="text-xs text-left">
+            Welcome back,
+            <strong className="block">{session.user.name}</strong>
+          </span>
+          <ChevronDownIcon className="w-3 h-3" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-52">
+        {/* <DropdownMenuLabel>label</DropdownMenuLabel> */}
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard">
+            <LayoutDashboardIcon />
+            Dashboard
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/training">
+            <BotMessageSquareIcon />
+            Training
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/training/data">
+            <DatabaseIcon />
+            My Data
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/training/data">
+            <MailIcon />
+            Messages
+            <DropdownMenuShortcut>
+              <Badge variant="secondary">0</Badge>
+            </DropdownMenuShortcut>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/training/data">
+            <MessageCircleQuestionIcon />
+            Questions
+            <DropdownMenuShortcut>
+              <Badge variant="secondary">0</Badge>
+            </DropdownMenuShortcut>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLuksoSignOut}>
+          <LogOutIcon />
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   ) : (
     <>
       <button

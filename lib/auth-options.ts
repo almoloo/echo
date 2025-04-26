@@ -53,20 +53,24 @@ export const authOptions: NextAuthOptions = {
           const user = await getUser(credentials.address);
           let userID: string;
           let avatar: string;
+          let name: string;
           if (user) {
             // FETCH ID
             userID = user._id.toString();
             avatar = user.info.avatar;
+            name = user.info.name;
           } else {
             // CREATE USER
             const newUser = await createUser(credentials.address);
             userID = newUser.id.toString();
             avatar = newUser.avatar!;
+            name = newUser.name!;
           }
           return {
             id: userID,
             address: credentials.address,
             image: avatar,
+            name,
           };
         } catch (error) {
           console.error("Verification Error: ", error);
