@@ -56,6 +56,7 @@ interface CharacterLevel {
 
 interface Character {
   percentage: number;
+  current: number;
   level: CharacterLevel;
 }
 

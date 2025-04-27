@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { LoaderCircleIcon, WalletIcon } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -11,6 +11,7 @@ import { lukso } from "viem/chains";
 import { createSiweMessage } from "viem/siwe";
 
 export default function CTAButton() {
+  const { data: session } = useSession();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -21,6 +22,9 @@ export default function CTAButton() {
   }, [error]);
 
   const handleLuksoSignIn = async () => {
+    if (session?.user) {
+      return router.push("/dashboard");
+    }
     setIsLoading(true);
     setError("");
 

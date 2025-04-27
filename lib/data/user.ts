@@ -83,14 +83,17 @@ export const getCharacterStats = async () => {
   return {
     identity: {
       percentage: identityPercent,
+      current: identityAnswers.length,
       level: identityLevel,
     },
     career: {
       percentage: careerPercent,
+      current: careerAnswers.length,
       level: careerLevel,
     },
     connection: {
       percentage: connectionPercent,
+      current: connectionAnswers.length,
       level: connectionLevel,
     },
   } as CharacterInfo;
