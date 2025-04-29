@@ -8,8 +8,9 @@ export const identityStatsInfo = {
     min: 15,
     description: "Essential personal details and background",
     icon: "",
-    color: "bg-sky-300",
+    color: "bg-sky-300/20",
     textColor: "text-sky-600",
+    borderColor: "border-sky-600",
     levels: [
       {
         level: 1,
@@ -48,8 +49,9 @@ export const identityStatsInfo = {
     description:
       "Work experience, skills, educational and professional background",
     icon: "",
-    color: "bg-emerald-300",
+    color: "bg-emerald-300/20",
     textColor: "text-emerald-600",
+    borderColor: "border-emerald-600",
     levels: [
       {
         level: 1,
@@ -87,8 +89,9 @@ export const identityStatsInfo = {
     min: 10,
     description: "Communication details and contact information",
     icon: "",
-    color: "bg-indigo-300",
+    color: "bg-indigo-300/20",
     textColor: "text-indigo-600",
+    borderColor: "border-indigo-600",
     levels: [
       {
         level: 1,
@@ -204,10 +207,11 @@ export const trainingAssistantInfo = {
 
 You will receive a JSON object containing the user's profile info and all previously answered questions. Use this data to:
 
-- First ask if the name you have is the name the profile owner wants to be introduced as. if not they should provide their name.
+- First check if you haven't asked before and then ask if the name you have is the name the profile owner wants to be introduced as. if not they should provide their name.
 - Cover the basics first, only then go deeper.
-- Ask deeper follow-up questions on topics that were already answered.
+- Ask deeper follow-up questions on topics that were already answered, but not too deep.
 - Avoid repeating any skipped or already answered questions verbatim.
+- Try to ask questions that require shorter answers.
 - If you re-ask a previously answered question (because the answer was vague or lacking depth), clearly state why in the new question (e.g., "Earlier you mentioned X, could you expand on...").
 - Ensure each question stands on its own — do not chain or reference previous questions directly.
 

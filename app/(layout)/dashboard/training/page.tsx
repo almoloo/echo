@@ -1,121 +1,27 @@
 "use client";
 
-import CharacterCard from "@/components/training/character-card";
 import QuestionCard from "@/components/training/question-card";
 import { saveAnswers } from "@/lib/actions/training";
 import { generateQuestions } from "@/lib/actions/ai";
-import { getCharacterStats } from "@/lib/data/user";
-import { useEffect, useState } from "react";
-
-const defaultQuestions = [
-  {
-    type: "identity",
-    question:
-      "How do you unwind after a long day of coding and development work?",
-  },
-  {
-    type: "identity",
-    question: "What inspired you to pursue a career in frontend development?",
-  },
-  {
-    type: "identity",
-    question:
-      "Can you share more about your background and how it has influenced your career choices?",
-  },
-  {
-    type: "identity",
-    question:
-      "You seem to have a passion for technology. How did this interest begin?",
-  },
-  {
-    type: "identity",
-    question:
-      "What are some values you find most important in your personal life?",
-  },
-  {
-    type: "identity",
-    question:
-      "Could you describe a personal or professional milestone that you are particularly proud of?",
-  },
-  {
-    type: "career",
-    question:
-      "In your role as a frontend developer, what challenges do you encounter most often?",
-  },
-  {
-    type: "career",
-    question:
-      "Do you have a mentor or role model in the tech industry who has impacted your career?",
-  },
-  {
-    type: "career",
-    question:
-      "What is your approach to integrating new technologies into your work?",
-  },
-  {
-    type: "career",
-    question:
-      "Could you discuss a project where you had to overcome significant technical hurdles?",
-  },
-  {
-    type: "career",
-    question:
-      "With your interest in Web3, how do you see the future of decentralized technologies?",
-  },
-  {
-    type: "career",
-    question:
-      "What steps are you taking to advance your skills in Javascript and Web3 technologies?",
-  },
-  {
-    type: "career",
-    question: "How do you measure success in your projects or career?",
-  },
-  {
-    type: "career",
-    question:
-      "Have you attended or are planning to attend any conferences or meetups related to your industry?",
-  },
-  {
-    type: "career",
-    question:
-      "How do you stay motivated and focused in your professional development journey?",
-  },
-  {
-    type: "connection",
-    question: "How do you approach building a community or following online?",
-  },
-  {
-    type: "connection",
-    question:
-      "What platforms do you find most effective for professional networking?",
-  },
-  {
-    type: "connection",
-    question:
-      "Are there any particular social media strategies you use to promote your work or personal brand?",
-  },
-];
+import { useContext, useState } from "react";
+import Heading from "@/components/layout/heading";
+import {
+  LayoutDashboardIcon,
+  LoaderIcon,
+  SaveIcon,
+  SparklesIcon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { characterContext } from "@/services/character-provider";
 
 export default function TrainingPage() {
+  const characterData = useContext(characterContext);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [questions, setQuestions] = useState<Question[]>(
-    defaultQuestions as Question[]
-  );
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
   const [skipped, setSkipped] = useState<Question[]>([]);
-  const [character, setCharacter] = useState<CharacterInfo | null>(null);
-  const [characterLoading, setCharacterLoading] = useState(false);
-
-  async function updateCharacter() {
-    const charInfo = await getCharacterStats();
-    setCharacter(charInfo);
-  }
-
-  useEffect(() => {
-    updateCharacter();
-  }, []);
 
   function nextQuestion(currentQuestion: Question) {
     setQuestions((prev) =>
@@ -123,10 +29,13 @@ export default function TrainingPage() {
         (questionItem) => questionItem.question !== currentQuestion.question
       )
     );
+
+    if (questions.length === 0) {
+      updateAnswers();
+    }
   }
 
   function submitAnswer(answer: QuestionAnswer) {
-    console.log(answer);
     setAnswers((prev) => [answer, ...prev]);
     nextQuestion(answer);
   }
@@ -141,65 +50,96 @@ export default function TrainingPage() {
       setLoading(true);
       const generatedQuestions = (await generateQuestions()) as string;
       const questionsArray = JSON.parse(generatedQuestions).questions;
-      console.log(questionsArray);
       setQuestions(questionsArray);
     } catch (error) {
-      console.error(error);
+      toast(error instanceof Error ? error.message : "An error has occured!");
     } finally {
       setLoading(false);
     }
   }
 
   async function updateAnswers() {
-    const submittedAnswers = await saveAnswers(answers, skipped);
+    try {
+      setSaving(true);
+      const submittedAnswers = await saveAnswers(answers, skipped);
+      setAnswers([]);
+      setSkipped([]);
+      characterData?.updateInfo();
+    } catch (error) {
+      toast(error instanceof Error ? error.message : "An error has occured!");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
     <div>
-      <CharacterCard character={character} loading={characterLoading} />
-      <h1>training</h1>
-      <button onClick={generateQuestionsHandler}>
-        {loading ? "Loading..." : "Generate questions"}
-      </button>
-      {questions.length > 0 && (
-        <div>
-          <QuestionCard
-            question={questions[0]}
-            skipQuestion={skipQuestion}
-            submitAnswer={submitAnswer}
-          />
+      <Heading
+        title="Training"
+        subtitle="Answer questions to help your Echo truly know you — your journey, your passions, your connections.
+Every answer becomes part of your story it can share with the world."
+        icon={<LayoutDashboardIcon />}
+      />
+      {questions.length === 0 && !saving && (
+        <div className="bg-slate-50 p-5 border rounded-xl">
+          {answers.length === 0 && skipped.length === 0 ? (
+            <>
+              <h3 className="font-medium text-lg">Ready to Build Your Echo?</h3>
+              <p className="mt-1 mb-3 text-slate-600 text-sm">
+                We’ll generate a few questions to help your Echo truly know you.
+                You can answer as much or as little as you like.
+              </p>
+            </>
+          ) : (
+            <>
+              <h3 className="font-medium text-lg">Wanna keep going?</h3>
+              <p className="mt-1 mb-3 text-slate-600 text-sm">
+                You’ve answered everything so far. Ready for a fresh batch of
+                questions?
+              </p>
+            </>
+          )}
+          <Button
+            size="lg"
+            onClick={generateQuestionsHandler}
+            disabled={loading}
+            className="bg-gradient-to-r from-0% from-indigo-500 hover:from-indigo-700 to-100% to-pink-600 hover:to-pink-800 disabled:grayscale transition-colors cursor-pointer"
+          >
+            {loading ? (
+              <LoaderIcon className="animate-spin" />
+            ) : (
+              <SparklesIcon />
+            )}
+            {answers.length === 0 && skipped.length === 0
+              ? "Generate My Questions"
+              : "Generate More Questions"}
+          </Button>
         </div>
       )}
-      <div>
-        <p>----------</p>
-        <button onClick={updateAnswers}>SUBMIT ANSWERS</button>
-        <p>----------</p>
-      </div>
-      <div>
-        {answers.length > 0 && (
-          <div>
-            <h1>answers: </h1>
-            {answers.map((answerElem) => (
-              <div>
-                {answerElem.type}:<p>{answerElem.question}</p>
-                <p>{answerElem.answer}</p>
-              </div>
-            ))}
+      {questions.length > 0 && !saving && (
+        <QuestionCard
+          question={questions[0]}
+          skipQuestion={skipQuestion}
+          submitAnswer={submitAnswer}
+        />
+      )}
+      {(answers.length > 0 || skipped.length > 0) && (
+        <div className="flex items-center bg-slate-50 mt-3 p-5 border rounded-xl">
+          <div className="text-sm">
+            Your progress will only be saved once you push this button. Don’t
+            worry — you can edit later.
           </div>
-        )}
-      </div>
-      <div>
-        {skipped.length > 0 && (
-          <div>
-            <h1>skipped: </h1>
-            {skipped.map((skipElem) => (
-              <div>
-                {skipElem.type}:<p>{skipElem.question}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          <Button
+            onClick={updateAnswers}
+            className="ml-auto cursor-pointer"
+            size="lg"
+            disabled={saving}
+          >
+            {saving ? <LoaderIcon className="animate-spin" /> : <SaveIcon />}
+            Save my Answers
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
