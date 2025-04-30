@@ -14,7 +14,7 @@ export default async function DashboardLayout({
   }
   return (
     <div className="md:gap-5 lg:gap-10 md:grid md:grid-cols-5 lg:grid-cols-12 mx-5 md:mx-10 grow">
-      <aside className="hidden md:flex md:flex-col md:col-span-2 lg:col-span-3">
+      <aside className="hidden top-10 sticky md:flex md:flex-col md:col-span-2 lg:col-span-3 max-h-[90vh]">
         <Sidebar />
       </aside>
       <main className="flex flex-col md:col-span-3 lg:col-span-9 grow">
