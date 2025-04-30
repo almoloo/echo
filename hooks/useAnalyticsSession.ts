@@ -56,6 +56,7 @@ export function useAnalyticsSession(
         sessionId: sessionId!,
         location: ipInfo,
         contextWallet: contextWalletAddress,
+        date: Date.now(),
       };
 
       setHasSessionInit(true);
