@@ -12,7 +12,8 @@ function getOrCreateSessionId() {
 
 export function useAnalyticsSession(
   walletAddress?: string,
-  visitor?: VisitData
+  visitor?: VisitData,
+  contextWalletAddress?: string
 ) {
   const [ipInfo, setIpInfo] = useState<IPInfo | undefined>(undefined);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -40,13 +41,21 @@ export function useAnalyticsSession(
   }, []);
 
   useEffect(() => {
-    if (!sessionId || !visitor || !ipInfo || hasSessionInit) return;
+    if (
+      !sessionId ||
+      !visitor ||
+      !ipInfo ||
+      !contextWalletAddress ||
+      hasSessionInit
+    )
+      return;
 
     async function init() {
       let visitorInfo: VisitData = {
         ...visitor,
         sessionId: sessionId!,
         location: ipInfo,
+        contextWallet: contextWalletAddress,
       };
 
       setHasSessionInit(true);
@@ -57,7 +66,7 @@ export function useAnalyticsSession(
     }
 
     init();
-  }, [sessionId, ipInfo, visitor]);
+  }, [sessionId, ipInfo, visitor, contextWalletAddress]);
 
   useEffect(() => {
     if (!sessionId || !walletAddress || !visitor || !docId || hasSyncedWallet)

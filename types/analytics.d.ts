@@ -7,6 +7,7 @@ interface VisitData {
   languages?: string[];
   resolution?: string;
   wallet?: string;
+  contextWallet?: string;
 }
 
 interface IPInfo {

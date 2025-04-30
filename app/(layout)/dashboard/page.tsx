@@ -1,12 +1,16 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import Heading from "@/components/layout/heading";
+import { LayoutDashboardIcon } from "lucide-react";
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession();
   return (
     <div>
-      <h1>dashboard</h1>
+      <Heading
+        title="Dashboard"
+        subtitle="These are the people who’ve visited your profile — curious minds, potential connections, or future collaborators."
+        icon={<LayoutDashboardIcon />}
+      />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { generateQuestions } from "@/lib/actions/ai";
 import { useContext, useState } from "react";
 import Heading from "@/components/layout/heading";
 import {
-  LayoutDashboardIcon,
+  BotMessageSquareIcon,
   LoaderIcon,
   SaveIcon,
   SparklesIcon,
@@ -78,7 +78,7 @@ export default function TrainingPage() {
         title="Training"
         subtitle="Answer questions to help your Echo truly know you — your journey, your passions, your connections.
 Every answer becomes part of your story it can share with the world."
-        icon={<LayoutDashboardIcon />}
+        icon={<BotMessageSquareIcon />}
       />
       {questions.length === 0 && !saving && (
         <div className="bg-slate-50 p-5 border rounded-xl">
