@@ -12,7 +12,11 @@ export default function UpWidgetPage() {
     undefined
   );
   const wallet = profileConnected ? accounts[0] : undefined;
-  const { sessionId } = useAnalyticsSession(wallet, visitorInfo);
+  const { sessionId } = useAnalyticsSession(
+    wallet,
+    visitorInfo,
+    contextAccounts[0]
+  );
   const { isReady, messages, suggestions, assistantId, askQuestion } =
     useChatBot(contextAccounts[0], profileConnected);
 
