@@ -248,3 +248,16 @@ export const generateInitChatPrompt = () => {
   }
   `;
 };
+
+export const _colors = [
+  "#f19066",
+  "#f7b731",
+  "#546de5",
+  "#e15f41",
+  "#c44569",
+  "#574b90",
+  "#f78fb3",
+  "#3dc1d3",
+  "#303952",
+  "#e66767",
+];
