@@ -1,6 +1,7 @@
 "use client";
 
 import { getCharacterStats } from "@/lib/data/user";
+import { useSession } from "next-auth/react";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -19,12 +20,14 @@ export default function CharacterProvider({
 }: {
   children: ReactNode;
 }) {
+  const { data: session } = useSession();
   const [characterInfo, setCharacterInfo] = useState<CharacterInfo | null>(
     null
   );
   const [loading, setLoading] = useState(true);
 
   async function updateCharacter() {
+    if (!session?.user) return;
     try {
       setLoading(true);
       const charInfo = await getCharacterStats();
