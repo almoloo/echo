@@ -18,6 +18,7 @@ import {
   LogOutIcon,
   MailIcon,
   MessageCircleQuestionIcon,
+  UserRoundPenIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +72,12 @@ export default function AccountButton() {
           <Link href="/dashboard/training/data">
             <DatabaseIcon />
             My Data
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/profile">
+            <UserRoundPenIcon />
+            Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

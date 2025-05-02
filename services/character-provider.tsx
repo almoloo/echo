@@ -47,6 +47,11 @@ export default function CharacterProvider({
     updateCharacter();
   }, []);
 
+  useEffect(() => {
+    if (characterInfo) return;
+    updateCharacter();
+  }, [session?.user]);
+
   return (
     <characterContext.Provider
       value={{ info: characterInfo, loading, updateInfo: updateCharacter }}

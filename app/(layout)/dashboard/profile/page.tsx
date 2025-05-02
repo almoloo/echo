@@ -1,9 +1,12 @@
+import Heading from "@/components/layout/heading";
 import ProfileForm from "@/components/profile/profile-form";
 import { editUser } from "@/lib/actions/user";
 import { authOptions } from "@/lib/auth-options";
 import { getUser } from "@/lib/data/user";
+import { UserRoundPenIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Form from "next/form";
+import { toast } from "sonner";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
@@ -24,17 +27,20 @@ export default async function ProfilePage() {
         tags,
         email: formData.get("email")?.toString(),
       };
-      console.log(userInfo);
       await editUser(userInfo);
     } catch (error) {
-      console.error(error);
+      console.error("An error occured during profile submission!", error);
     }
   }
 
   return (
     <div>
-      <h1>profile</h1>
-      <Form action={updateProfile}>
+      <Heading
+        title="Profile"
+        icon={<UserRoundPenIcon />}
+        subtitle="This profile was imported from your Universal Profile. The information here will be used to help train your personal assistant and shape its responses."
+      />
+      <Form action={updateProfile} className="flex flex-col gap-6">
         <ProfileForm
           updateProfile={updateProfile}
           name={name}

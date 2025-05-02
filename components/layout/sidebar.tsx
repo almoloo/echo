@@ -5,6 +5,7 @@ import {
   LayoutDashboardIcon,
   MailIcon,
   MessageCircleQuestionIcon,
+  UserRoundPenIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -60,6 +61,12 @@ export default function Sidebar() {
         icon={<DatabaseIcon />}
         isActive={false}
         url="/dashboard/training/data"
+      />
+      <SidebarItem
+        text="Profile"
+        icon={<UserRoundPenIcon />}
+        isActive={false}
+        url="/dashboard/profile"
       />
       {/* <Separator className="mt-auto mb-3" /> */}
       <div className="flex flex-col gap-1 mt-auto">

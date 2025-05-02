@@ -177,6 +177,7 @@ export default function VisitorCard({ visitor }: VisitorCardProps) {
               <div className="flex items-center gap-1">
                 {userInfo.links.map((link: { title: string; url: string }) => (
                   <Link
+                    key={link.url}
                     href={link.url}
                     target="_blank"
                     className={`${buttonVariants({
@@ -193,7 +194,9 @@ export default function VisitorCard({ visitor }: VisitorCardProps) {
             {userInfo.tags.length > 0 && (
               <div className="flex items-center gap-1">
                 {userInfo.tags.map((tag) => (
-                  <Badge variant="outline">{tag}</Badge>
+                  <Badge variant="outline" key={tag}>
+                    {tag}
+                  </Badge>
                 ))}
               </div>
             )}
