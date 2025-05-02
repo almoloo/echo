@@ -69,10 +69,10 @@ export default function QuestionCard({
         You can skip or update your answers anytime.
       </small>
       <div className="flex flex-wrap justify-end gap-2 mt-2">
-        <Button type="reset" variant="ghost" className="cursor-pointer">
+        <Button type="reset" variant="ghost">
           Skip Question
         </Button>
-        <Button type="submit" className="cursor-pointer" variant="secondary">
+        <Button type="submit" variant="secondary">
           <div className="flex items-center gap-1">
             <CommandIcon className="text-slate-400" />
             <CornerDownLeft className="text-slate-400" />

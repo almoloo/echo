@@ -31,9 +31,7 @@ function SidebarItem({
       className={`${buttonVariants({
         variant: "ghost",
         size: "lg",
-      })} justify-start cursor-pointer  ${
-        isActive ? "bg-indigo-200/25" : ""
-      } ${className}`}
+      })} justify-start ${isActive ? "bg-indigo-200/25" : ""} ${className}`}
     >
       {icon}
       {text}

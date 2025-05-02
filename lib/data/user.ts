@@ -4,7 +4,7 @@ import ERC725 from "@erc725/erc725.js";
 import profileSchema from "@erc725/erc725.js/schemas/LSP3ProfileMetadata.json";
 import { db } from "@/lib/db";
 import { getUserAnswers } from "@/lib/data/training";
-import { identityStatsInfo } from "@/lib/constants";
+import { defaultAvatar, identityStatsInfo } from "@/lib/constants";
 
 export const fetchUPMetadata = async (address: string) => {
   const erc725js = new ERC725(
@@ -15,10 +15,47 @@ export const fetchUPMetadata = async (address: string) => {
       ipfsGateway: "https://api.universalprofile.cloud/ipfs/",
     }
   );
+  console.log(erc725js);
   const decodedProfileMetadata = await erc725js.fetchData("LSP3Profile");
+  console.log(decodedProfileMetadata);
   return decodedProfileMetadata.value as {
     LSP3Profile: Record<string, any>;
   };
+};
+
+export const fetchUPInfo = async (address: string) => {
+  const userMetadata = await fetchUPMetadata(address);
+
+  let userInfo = {
+    name: "",
+    bio: "",
+    links: [],
+    tags: [],
+    avatar: "",
+  };
+
+  if (userMetadata.LSP3Profile) {
+    userInfo = {
+      name: userMetadata.LSP3Profile.name ?? "",
+      bio: userMetadata.LSP3Profile.description ?? "",
+      links: userMetadata.LSP3Profile.links ?? [],
+      tags: userMetadata.LSP3Profile.tags ?? [],
+      avatar: "",
+    };
+    // FETCH AVATAR
+    let largestImage: ProfileImage | null = null;
+    if (userMetadata.LSP3Profile.profileImage) {
+      largestImage = userMetadata.LSP3Profile.profileImage.length
+        ? userMetadata.LSP3Profile.profileImage.reduce(
+            (max: ProfileImage, img: ProfileImage) =>
+              img.width > max.width ? img : max
+          )
+        : null;
+    }
+    userInfo.avatar = largestImage ? largestImage.url : defaultAvatar;
+  }
+
+  return userInfo;
 };
 
 export const getUser = async (address: string) => {

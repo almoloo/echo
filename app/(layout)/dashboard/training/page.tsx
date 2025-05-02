@@ -103,7 +103,7 @@ Every answer becomes part of your story it can share with the world."
             size="lg"
             onClick={generateQuestionsHandler}
             disabled={loading}
-            className="bg-gradient-to-r from-0% from-indigo-500 hover:from-indigo-700 to-100% to-pink-600 hover:to-pink-800 disabled:grayscale transition-colors cursor-pointer"
+            className="bg-gradient-to-r from-0% from-indigo-500 hover:from-indigo-700 to-100% to-pink-600 hover:to-pink-800 disabled:grayscale transition-colors"
           >
             {loading ? (
               <LoaderIcon className="animate-spin" />
@@ -131,7 +131,7 @@ Every answer becomes part of your story it can share with the world."
           </div>
           <Button
             onClick={updateAnswers}
-            className="ml-auto cursor-pointer"
+            className="ml-auto"
             size="lg"
             disabled={saving}
           >

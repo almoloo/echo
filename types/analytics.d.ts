@@ -16,6 +16,7 @@ interface IPInfo {
   ip: string;
   city: string;
   country: string;
+  countryShort: string;
 }
 
 interface UserAgentData {

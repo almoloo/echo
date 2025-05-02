@@ -1,7 +1,8 @@
+import VisitorCard from "@/components/analytics/visitor-card";
 import VisitorsChart from "@/components/analytics/visitors-chart";
 import Heading from "@/components/layout/heading";
 import { getVisitors } from "@/lib/data/analytics";
-import { LayoutDashboardIcon } from "lucide-react";
+import { EyeIcon, LayoutDashboardIcon } from "lucide-react";
 
 export default async function DashboardPage() {
   const visitors = await getVisitors();
@@ -17,25 +18,14 @@ export default async function DashboardPage() {
 
       <VisitorsChart data={visitors} className="mb-5" />
 
+      <Heading title="Visitors" icon={<EyeIcon />} />
+
       {visitors.length > 0 ? (
-        <>
+        <div className="flex flex-col gap-2">
           {visitors.map((visitor) => (
-            <div key={visitor.id}>
-              <div>id: {visitor.id}</div>
-              <div>date: {visitor.date}</div>
-              <div>languages: {visitor.languages?.join(", ")}</div>
-              <div>
-                location: {visitor.location?.country}, {visitor.location?.city}
-              </div>
-              <div>referrer: {visitor.referrer}</div>
-              <div>resolution: {visitor.resolution}</div>
-              <div>userAgent: {visitor.userAgent}</div>
-              <div>wallet: {visitor.wallet}</div>
-              <div>UA: {JSON.stringify(visitor.userAgentData)}</div>
-              <div>---</div>
-            </div>
+            <VisitorCard visitor={visitor} key={visitor.id} />
           ))}
-        </>
+        </div>
       ) : (
         <div>no visitors!</div>
       )}

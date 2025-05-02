@@ -28,6 +28,7 @@ export function useAnalyticsSession(
       setIpInfo({
         city: resJson.city,
         country: resJson.country_name,
+        countryShort: resJson.country_code,
         ip: resJson.ip,
       });
     }

@@ -28,22 +28,29 @@ export default function VisitorsChart({ data, className }: VisitorsChartProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="connection">
-          <TabsList>
-            <TabsTrigger value="connection">Connection</TabsTrigger>
-            <TabsTrigger value="browser">Browser</TabsTrigger>
-            <TabsTrigger value="os">Operating System</TabsTrigger>
-          </TabsList>
-          <TabsContent value="connection">
-            <ByConnection data={data} />
-          </TabsContent>
-          <TabsContent value="browser">
-            <ByBrowser data={data} />
-          </TabsContent>
-          <TabsContent value="os">
-            <ByOS data={data} />
-          </TabsContent>
-        </Tabs>
+        {data.length > 0 ? (
+          <Tabs defaultValue="connection">
+            <TabsList>
+              <TabsTrigger value="connection">Connection</TabsTrigger>
+              <TabsTrigger value="browser">Browser</TabsTrigger>
+              <TabsTrigger value="os">Operating System</TabsTrigger>
+            </TabsList>
+            <TabsContent value="connection">
+              <ByConnection data={data} />
+            </TabsContent>
+            <TabsContent value="browser">
+              <ByBrowser data={data} />
+            </TabsContent>
+            <TabsContent value="os">
+              <ByOS data={data} />
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <div className="m-5 text-slate-500 text-sm text-center">
+            Your Universal Profile hasn’t had any visitors yet. Share your
+            profile link to start tracking views and engagement.
+          </div>
+        )}
       </CardContent>
     </Card>
   );
