@@ -180,7 +180,9 @@ export default function UpWidgetPage() {
         <div className="flex items-center gap-3 h-7">
           <div className="bg-slate-200 border-slate-600 rounded-full w-7 h-7"></div>
           <Avatar>
-            <AvatarImage src={convertIPFSHash(accountInfo?.avatar!)} />
+            {accountInfo && accountInfo.avatar && (
+              <AvatarImage src={convertIPFSHash(accountInfo?.avatar!)} />
+            )}
             <AvatarFallback>
               {accountInfo?.name?.substring(0, 2)}
             </AvatarFallback>
