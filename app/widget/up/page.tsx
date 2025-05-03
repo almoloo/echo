@@ -6,6 +6,7 @@ import { useUniversalProfile } from "@/hooks/useUniversalProfile";
 import { getUser } from "@/lib/data/user";
 import {
   EllipsisIcon,
+  LoaderIcon,
   LockIcon,
   MoveLeftIcon,
   SendIcon,
@@ -99,9 +100,15 @@ export default function UpWidgetPage() {
   }, []);
 
   async function submitQuestionForm(formData: FormData) {
+    setAwaitingResponse(true);
     makePendingResponse();
     askQuestion(formData);
   }
+
+  const [awaitingResponse, setAwaitingResponse] = useState(false);
+  useEffect(() => {
+    setAwaitingResponse(isPendingResponse);
+  }, [isPendingResponse]);
 
   useEffect(() => {
     messageBox.current?.scrollTo({
@@ -234,15 +241,15 @@ export default function UpWidgetPage() {
                   key={message.id}
                 />
               ))}
-            {isPendingResponse && (
+            {awaitingResponse && (
               <div className="flex items-center gap-2">
                 <EllipsisIcon className="animate-pulse" />
                 <span className="text-slate-500 text-sm">Thinking</span>
               </div>
             )}
           </div>
-          {suggestions.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1 mt-3">
+          {suggestions.length > 0 && !awaitingResponse && (
+            <div className="flex flex-nowrap items-center gap-1 mt-3 w-full overflow-x-auto">
               {suggestions.map((suggestion) => (
                 <form
                   action={submitQuestionForm}
@@ -267,9 +274,14 @@ export default function UpWidgetPage() {
               placeholder="Your Question..."
               name="q"
               className="outline-0"
+              disabled={awaitingResponse}
             />
-            <Button type="submit" size="icon">
-              <SendIcon />
+            <Button type="submit" size="icon" disabled={awaitingResponse}>
+              {awaitingResponse ? (
+                <LoaderIcon className="animate-spin" />
+              ) : (
+                <SendIcon />
+              )}
             </Button>
           </div>
         </form>

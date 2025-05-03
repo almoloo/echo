@@ -195,6 +195,11 @@ If a user wants to donate or transfer some money to the user ask for the amount 
     }
   },
 }
+If you are asked to create a welcome message, follow the following format for the response don't escape or encode anything just give the raw object:
+{
+  welcomeMessage: string;
+  suggested: string[];
+}
 `,
   description:
     "Acts as the user and answers questions based on their provided profile data. Avoids hallucinations and steers conversations back to the user.",
