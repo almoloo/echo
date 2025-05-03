@@ -1,11 +1,7 @@
 interface Message {
+  id?: string;
   from: "Assistant" | "User";
   text: string;
-}
-
-interface UserMessage {
-  from: string;
-  to: string;
-  text: string;
-  read: boolean;
+  name?: string;
+  avatar?: string;
 }
