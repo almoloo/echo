@@ -7,11 +7,14 @@ import { getUser } from "@/lib/data/user";
 import { LockIcon, MoveLeftIcon, SparklesIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import Link from "next/link";
 
 export default function UpWidgetPage() {
   const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
   const [contextInfo, setContextInfo] = useState<UserInfo | null>(null);
+  const [accountInfo, setAccountInfo] = useState<UserInfo | null>(null);
   const [initLoading, setInitLoading] = useState(true);
+  const [accountLoading, setAccountLoading] = useState(true);
 
   useEffect(() => {
     if (!contextAccounts[0]) return;
@@ -33,6 +36,27 @@ export default function UpWidgetPage() {
 
     init();
   }, [contextAccounts[0]]);
+
+  useEffect(() => {
+    if (!accounts[0]) return;
+    async function init() {
+      try {
+        const userInfo = await getUser(accounts[0]);
+        if (userInfo) {
+          setAccountInfo(userInfo.info);
+          setAccountLoading(false);
+        } else {
+          throw new Error("Failed to fetch user info!");
+        }
+      } catch (error) {
+        setTimeout(() => {
+          init();
+        }, 3000);
+      }
+    }
+
+    init();
+  }, [accounts[0]]);
 
   const [visitorInfo, setVisitorInfo] = useState<VisitData | undefined>(
     undefined
@@ -61,9 +85,10 @@ export default function UpWidgetPage() {
     });
   }, []);
 
-  if (initLoading) {
+  // ---------- LOADING STAGES
+  if (initLoading || isPending || accountLoading || initLoading) {
     return (
-      <div className="justify-center items-center gap-3 p-1 w-screen h-screen">
+      <section className="justify-center items-center gap-3 p-1 w-screen h-screen">
         <DotLottieReact
           src="/orb-animation.lottie"
           loop
@@ -73,21 +98,33 @@ export default function UpWidgetPage() {
         <div className="mt-auto px-3 py-1 border-l-4">
           <h2 className="mb-1 font-bold animate-pulse">Loading...</h2>
           <p className="font-medium text-slate-400 text-xs text-balance leading-relaxed">
-            We’re fetching the profile. Get ready to meet an AI that actually
-            knows who it’s talking about.
+            {initLoading && (
+              <>
+                We’re fetching the profile. Get ready to meet an AI that
+                actually knows who it’s talking about.
+              </>
+            )}
+            {isPending && (
+              <>
+                We’re creating your private chat with the assistant. It’ll be
+                ready to talk in just a moment.
+              </>
+            )}
+            {(accountLoading || initLoading) && (
+              <>
+                We're fetching the account metadata from the Universal Profile.
+              </>
+            )}
           </p>
         </div>
-      </div>
+      </section>
     );
   }
 
-  if (isPending) {
-    return <div>Waiting for connection</div>;
-  }
-
+  // ---------- PRE-CONNECTION STAGE
   if (!profileConnected) {
     return (
-      <div className="relative flex flex-col gap-3 w-screen h-screen">
+      <section className="relative flex flex-col gap-3 w-screen h-screen">
         <div className="flex items-center gap-3 h-7">
           <div className="bg-slate-200 border-slate-600 rounded-full w-7 h-7"></div>
           <MoveLeftIcon className="text-slate-500 animate-pulse" />
@@ -125,11 +162,27 @@ export default function UpWidgetPage() {
         {/* <div>{isReady && "READY!"}</div> */}
         {/* <div>{JSON.stringify(messages)}</div> */}
         {/* <div>{JSON.stringify(suggestions)}</div> */}
-      </div>
+      </section>
     );
   }
 
-  if (isReady) {
-    return <div>everything ready</div>;
+  // ---------- CHATBOX STAGE
+  if (isReady && !accountLoading) {
+    return (
+      <section className="flex flex-col gap-3">
+        <div className="flex items-center gap-3 h-7">
+          <div className="bg-slate-200 border-slate-600 rounded-full w-7 h-7"></div>
+          <div className="flex flex-col text-xs">
+            <strong>Hi {accountInfo?.name}.</strong>
+            <Link
+              href="https://echo.almoloo.com"
+              className="text-indigo-600 text-xs hover:underline"
+            >
+              Create Your Assistant
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
   }
 }

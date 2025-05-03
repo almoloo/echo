@@ -62,5 +62,9 @@ export function useUniversalProfile() {
     };
   }, [accounts[0], contextAccounts[0], updateConnected]);
 
-  return { accounts, contextAccounts, profileConnected };
+  return {
+    accounts,
+    contextAccounts,
+    profileConnected,
+  };
 }
