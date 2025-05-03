@@ -1,8 +1,8 @@
 import { Db, MongoClient, ServerApiVersion } from "mongodb";
 
-// if (!process.env.DB_URI) {
-//   throw new Error("Mongo URI not found!");
-// }
+if (!process.env.DB_URI) {
+  throw new Error("Mongo URI not found!");
+}
 
 const uri = process.env.DB_URI;
 const options = {
