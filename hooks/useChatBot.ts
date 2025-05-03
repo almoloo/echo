@@ -81,10 +81,11 @@ export function useChatBot(address?: string, connected?: boolean) {
       );
 
       let message = JSON.parse(res!).response;
-      if (typeof message === "string") {
-        message = JSON.parse(message);
-      }
       console.log("🎈", message);
+      // if (typeof message === "string") {
+      //   message = JSON.parse(message);
+      // }
+      // console.log("🎈", message);
       // return message;
       let response: Message = {
         from: "Assistant",

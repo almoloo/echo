@@ -215,15 +215,26 @@ export default function UpWidgetPage() {
         {suggestions.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             {suggestions.map((suggestion) => (
-              <button className="bg-indigo-300/15 p-1 rounded-lg text-indigo-600 text-xs">
-                {suggestion}
-              </button>
+              <form action={askQuestion} key={Math.random().toString()}>
+                <input type="hidden" name="q" value={suggestion} />
+                <button
+                  type="submit"
+                  className="bg-indigo-300/15 px-2 py-1 rounded-lg text-indigo-600 text-xs"
+                >
+                  {suggestion}
+                </button>
+              </form>
             ))}
           </div>
         )}
         <form action={askQuestion}>
           <div className="flex items-center gap-2 w-full">
-            <Input type="text" placeholder="Your Question..." name="q" />
+            <Input
+              type="text"
+              placeholder="Your Question..."
+              name="q"
+              className="outline-0"
+            />
             <Button type="submit" size="icon">
               <SendIcon />
             </Button>
