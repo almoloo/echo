@@ -8,6 +8,8 @@ import { LockIcon, MoveLeftIcon, SparklesIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { convertIPFSHash } from "@/lib/utils";
 
 export default function UpWidgetPage() {
   const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
@@ -172,11 +174,18 @@ export default function UpWidgetPage() {
       <section className="flex flex-col gap-3">
         <div className="flex items-center gap-3 h-7">
           <div className="bg-slate-200 border-slate-600 rounded-full w-7 h-7"></div>
+          <Avatar>
+            <AvatarImage src={convertIPFSHash(accountInfo?.avatar!)} />
+            <AvatarFallback>
+              {accountInfo?.name?.substring(0, 2)}
+            </AvatarFallback>
+          </Avatar>
           <div className="flex flex-col text-xs">
             <strong>Hi {accountInfo?.name}.</strong>
             <Link
               href="https://echo.almoloo.com"
               className="text-indigo-600 text-xs hover:underline"
+              target="_blank"
             >
               Create Your Assistant
             </Link>
