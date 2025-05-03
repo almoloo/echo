@@ -88,7 +88,12 @@ export default function UpWidgetPage() {
   }, []);
 
   // ---------- LOADING STAGES
-  if (initLoading || isPending || accountLoading || initLoading) {
+  if (
+    initLoading ||
+    isPending ||
+    initLoading ||
+    (profileConnected && accountLoading)
+  ) {
     return (
       <section className="justify-center items-center gap-3 p-1 w-screen h-screen">
         <DotLottieReact
@@ -112,7 +117,7 @@ export default function UpWidgetPage() {
                 ready to talk in just a moment.
               </>
             )}
-            {(accountLoading || initLoading) && (
+            {(initLoading || accountLoading) && (
               <>
                 We're fetching the account metadata from the Universal Profile.
               </>
