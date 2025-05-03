@@ -190,7 +190,7 @@ export default function UpWidgetPage() {
             </Link>
           </div>
         </header>
-        <main className="grow">
+        <main className="bg-slate-50 shadow-inner p-3 rounded-xl overflow-y-scroll grow">
           <p>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum
             sapiente quo mollitia autem voluptates, nobis architecto cumque.
