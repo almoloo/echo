@@ -163,7 +163,7 @@ export default function ProfileForm(props: ProfileFormProps) {
         type="hidden"
         name="avatar"
         placeholder="avatar"
-        defaultValue={props.avatar}
+        defaultValue={formData.avatar}
         readOnly
       />
 
