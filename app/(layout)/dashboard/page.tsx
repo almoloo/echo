@@ -7,7 +7,6 @@ import { EyeIcon, LayoutDashboardIcon } from "lucide-react";
 export default async function DashboardPage() {
   const visitors = await getVisitors();
   console.log(visitors);
-  // const mainChartData = visitors.map
   return (
     <div>
       <Heading
@@ -22,7 +21,7 @@ export default async function DashboardPage() {
 
       {visitors.length > 0 ? (
         <div className="flex flex-col gap-2">
-          {visitors.map((visitor) => (
+          {visitors.reverse().map((visitor) => (
             <VisitorCard visitor={visitor} key={visitor.id} />
           ))}
         </div>

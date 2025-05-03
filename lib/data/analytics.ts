@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { getUserAddress } from "@/lib/actions/user";
 import { encryptId } from "@/lib/server-utils";
 import { UAParser } from "ua-parser-js";
+import { hideIp } from "../utils";
 
 export const getVisitors = async () => {
   const address = await getUserAddress();
@@ -23,7 +24,12 @@ export const getVisitors = async () => {
     const newElem: any = elem;
     delete newElem["_id"];
     return {
+      ...newElem,
       id,
+      location: {
+        ...newElem.location,
+        ip: hideIp(newElem.location.ip),
+      },
       userAgentData: {
         browser: {
           name: userAgentData.browser.name,
@@ -39,7 +45,6 @@ export const getVisitors = async () => {
           version: userAgentData.os.version,
         },
       },
-      ...newElem,
     } as VisitData;
   });
 

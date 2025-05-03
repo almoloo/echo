@@ -11,7 +11,7 @@ import {
 import { toast } from "sonner";
 import { useState } from "react";
 import { fetchUPInfo } from "@/lib/data/user";
-import { convertIPFSHash } from "@/lib/utils";
+import { convertIPFSHash, hideIp } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -91,10 +91,14 @@ export default function VisitorCard({ visitor }: VisitorCardProps) {
         >
           {new Date(Number(visitor.date)).toLocaleString()}
         </time>
+        {visitor.location?.ip && (
+          <div className="text-xs">IP: {visitor.location.ip}</div>
+        )}
         <div>
           {flagEmoji && <span className="mr-2 text-sm">{flagEmoji}</span>}
           <small className="text-sm">
-            {visitor.location?.country}, {visitor.location?.city}
+            {visitor.location?.country && visitor.location?.country}
+            {visitor.location?.city && `, ${visitor.location?.city}`}
           </small>
         </div>
         <UserState isConnected={!!visitor.wallet} />

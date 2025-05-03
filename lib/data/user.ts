@@ -5,6 +5,7 @@ import profileSchema from "@erc725/erc725.js/schemas/LSP3ProfileMetadata.json";
 import { db } from "@/lib/db";
 import { getUserAnswers } from "@/lib/data/training";
 import { defaultAvatar, identityStatsInfo } from "@/lib/constants";
+import { encryptId } from "../server-utils";
 
 export const fetchUPMetadata = async (address: string) => {
   const erc725js = new ERC725(
@@ -68,7 +69,14 @@ export const getUser = async (address: string) => {
     address: address.toLowerCase(),
   });
 
-  return user;
+  const id = encryptId(user?._id.toString()!);
+  const userObj: any = user;
+  delete userObj["_id"];
+
+  return {
+    ...userObj,
+    id,
+  };
 };
 
 export const getCharacterStats = async () => {

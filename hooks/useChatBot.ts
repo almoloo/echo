@@ -4,9 +4,11 @@ import {
 } from "@/lib/actions/chat-bot";
 import { getUser } from "@/lib/data/user";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function useChatBot(address?: string, connected?: boolean) {
   const [isReady, setIsReady] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [assistantId, setAssistantId] = useState<string | null>(null);
   const [chatThreadId, setChatThreadId] = useState<string | null>(null);
   const [initiated, setInitiated] = useState(false);
@@ -29,6 +31,7 @@ export function useChatBot(address?: string, connected?: boolean) {
 
     async function init() {
       try {
+        setIsPending(true);
         const res = await createChatSession(assistantId!);
         let message = JSON.parse(res.message).response;
         if (typeof message === "string") {
@@ -44,6 +47,11 @@ export function useChatBot(address?: string, connected?: boolean) {
         setIsReady(true);
       } catch (error) {
         console.error(error);
+        toast(
+          "An error occured trying to create a new chat session with the assistant."
+        );
+      } finally {
+        setIsPending(false);
       }
     }
 
@@ -75,5 +83,12 @@ export function useChatBot(address?: string, connected?: boolean) {
 
   async function sendAmount(lyxAmount: number) {}
 
-  return { isReady, messages, suggestions, askQuestion, assistantId };
+  return {
+    isReady,
+    isPending,
+    messages,
+    suggestions,
+    askQuestion,
+    assistantId,
+  };
 }

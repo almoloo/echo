@@ -63,3 +63,8 @@ export function calculateDataPercentages(data: { name: string }[]) {
     percent: parseFloat(((count / total) * 100).toFixed(2)),
   }));
 }
+
+export function hideIp(ip: string) {
+  const ipArr = ip.split(".");
+  return `${ipArr[0]}.***.***.${ipArr[3]}`;
+}
