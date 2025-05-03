@@ -4,7 +4,13 @@ import { useAnalyticsSession } from "@/hooks/useAnalyticsSession";
 import { useChatBot } from "@/hooks/useChatBot";
 import { useUniversalProfile } from "@/hooks/useUniversalProfile";
 import { getUser } from "@/lib/data/user";
-import { LockIcon, MoveLeftIcon, SendIcon, SparklesIcon } from "lucide-react";
+import {
+  EllipsisIcon,
+  LockIcon,
+  MoveLeftIcon,
+  SendIcon,
+  SparklesIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Link from "next/link";
@@ -77,6 +83,8 @@ export default function UpWidgetPage() {
     suggestions,
     assistantId,
     askQuestion,
+    isPendingResponse,
+    makePendingResponse,
   } = useChatBot(contextAccounts[0], profileConnected);
 
   useEffect(() => {
@@ -87,6 +95,11 @@ export default function UpWidgetPage() {
       userAgent: navigator.userAgent,
     });
   }, []);
+
+  async function submitQuestionForm(formData: FormData) {
+    makePendingResponse();
+    askQuestion(formData);
+  }
 
   // ---------- LOADING STAGES
   if (
@@ -178,7 +191,7 @@ export default function UpWidgetPage() {
   if (isReady && !accountLoading) {
     return (
       <section className="flex flex-col gap-3 w-screen max-w-screen h-screen max-h-screen">
-        <header className="flex items-center gap-3 h-7">
+        <header className="flex items-center gap-3 h-7 shrink-0">
           <div className="bg-slate-200 border-slate-600 rounded-full w-7 h-7"></div>
           <div className="flex flex-col text-xs">
             <strong>Hi {accountInfo?.name}.</strong>
@@ -191,31 +204,39 @@ export default function UpWidgetPage() {
             </Link>
           </div>
         </header>
-        <main className="flex flex-col justify-end gap-2 overflow-y-auto grow">
-          {messages
-            .filter((message) => message.text.trim() !== "")
-            .map((message) => (
-              <MessageBubble
-                from={message.from}
-                message={message.text}
-                avatar={
-                  message.from === "Assistant"
-                    ? contextInfo?.avatar
-                    : accountInfo?.avatar
-                }
-                name={
-                  message.from === "Assistant"
-                    ? contextInfo?.name
-                    : accountInfo?.name
-                }
-                key={message.id}
-              />
-            ))}
+        <main className="overflow-y-auto grow">
+          <div className="flex flex-col justify-end gap-2 h-full">
+            {messages
+              .filter((message) => message.text.trim() !== "")
+              .map((message) => (
+                <MessageBubble
+                  from={message.from}
+                  message={message.text}
+                  avatar={
+                    message.from === "Assistant"
+                      ? contextInfo?.avatar
+                      : accountInfo?.avatar
+                  }
+                  name={
+                    message.from === "Assistant"
+                      ? contextInfo?.name
+                      : accountInfo?.name
+                  }
+                  key={message.id}
+                />
+              ))}
+            {isPendingResponse && (
+              <div className="flex items-center gap-2">
+                <EllipsisIcon className="animate-pulse" />
+                <span className="text-slate-500 text-sm">Thinking</span>
+              </div>
+            )}
+          </div>
         </main>
         {suggestions.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             {suggestions.map((suggestion) => (
-              <form action={askQuestion} key={Math.random().toString()}>
+              <form action={submitQuestionForm} key={Math.random().toString()}>
                 <input type="hidden" name="q" value={suggestion} />
                 <button
                   type="submit"
@@ -227,7 +248,7 @@ export default function UpWidgetPage() {
             ))}
           </div>
         )}
-        <form action={askQuestion}>
+        <form action={submitQuestionForm} className="shrink-0">
           <div className="flex items-center gap-2 w-full">
             <Input
               type="text"
