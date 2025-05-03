@@ -11,7 +11,7 @@ import {
   SendIcon,
   SparklesIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,8 @@ export default function UpWidgetPage() {
   const [accountInfo, setAccountInfo] = useState<UserInfo | null>(null);
   const [initLoading, setInitLoading] = useState(true);
   const [accountLoading, setAccountLoading] = useState(true);
+
+  const messageBox = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!contextAccounts[0]) return;
@@ -100,6 +102,13 @@ export default function UpWidgetPage() {
     makePendingResponse();
     askQuestion(formData);
   }
+
+  useEffect(() => {
+    messageBox.current?.scrollTo({
+      top: messageBox.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages]);
 
   // ---------- LOADING STAGES
   if (
@@ -204,7 +213,7 @@ export default function UpWidgetPage() {
             </Link>
           </div>
         </header>
-        <main className="overflow-y-auto grow">
+        <main className="overflow-y-auto grow" ref={messageBox}>
           <div className="flex flex-col justify-end gap-2 h-full">
             {messages
               .filter((message) => message.text.trim() !== "")
@@ -233,7 +242,7 @@ export default function UpWidgetPage() {
             )}
           </div>
           {suggestions.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1 mt-3">
               {suggestions.map((suggestion) => (
                 <form
                   action={submitQuestionForm}
