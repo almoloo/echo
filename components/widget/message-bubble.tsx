@@ -15,20 +15,24 @@ export default function MessageBubble({
   avatar,
   name,
 }: MessageBubbleProps) {
-  const bgColor = from === "assistant" ? "bg-indigo-500/50" : "bg-slate-400/50";
+  const bgColor = from === "assistant" ? "bg-indigo-500/25" : "bg-slate-400/25";
   const side = from === "assistant" ? "self-start" : "self-end";
   const corner = from === "assistant" ? "rounded-bl-xs" : "rounded-br-xs";
+  const direction = from === "assistant" ? "flex-row" : "flex-row-reverse";
+  const fontSize = from === "assistant" ? "text-base" : "text-sm";
   const avatarImage = convertIPFSHash(avatar ?? defaultAvatar);
 
   return (
-    <div className="flex items-end gap-2 max-w-[70vw]">
+    <div className={`flex items-end gap-2 max-w-[70vw] ${side} ${direction}`}>
       <Avatar>
         <AvatarImage src={avatarImage} />
         <AvatarFallback>
           {name ? name.substring(0, 2) : from.substring(0, 2)}
         </AvatarFallback>
       </Avatar>
-      <p className={`${bgColor} ${side} p-2 rounded-xl ${corner}`}>{message}</p>
+      <p className={`${bgColor} px-3 py-2 rounded-xl ${corner} ${fontSize}`}>
+        {message}
+      </p>
     </div>
   );
 }
