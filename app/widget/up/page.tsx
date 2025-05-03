@@ -4,12 +4,12 @@ import { useAnalyticsSession } from "@/hooks/useAnalyticsSession";
 import { useChatBot } from "@/hooks/useChatBot";
 import { useUniversalProfile } from "@/hooks/useUniversalProfile";
 import { getUser } from "@/lib/data/user";
-import { LockIcon, MoveLeftIcon, SparklesIcon } from "lucide-react";
+import { LockIcon, MoveLeftIcon, SendIcon, SparklesIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { convertIPFSHash } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function UpWidgetPage() {
   const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
@@ -176,17 +176,9 @@ export default function UpWidgetPage() {
   // ---------- CHATBOX STAGE
   if (isReady && !accountLoading) {
     return (
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center gap-3 h-7">
+      <section className="flex flex-col gap-3 w-screen max-w-screen h-screen max-h-screen">
+        <header className="flex items-center gap-3 h-7">
           <div className="bg-slate-200 border-slate-600 rounded-full w-7 h-7"></div>
-          <Avatar>
-            {accountInfo && accountInfo.avatar && (
-              <AvatarImage src={convertIPFSHash(accountInfo?.avatar!)} />
-            )}
-            <AvatarFallback>
-              {accountInfo?.name?.substring(0, 2)}
-            </AvatarFallback>
-          </Avatar>
           <div className="flex flex-col text-xs">
             <strong>Hi {accountInfo?.name}.</strong>
             <Link
@@ -197,7 +189,59 @@ export default function UpWidgetPage() {
               Create Your Assistant
             </Link>
           </div>
-        </div>
+        </header>
+        <main className="grow">
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum
+            sapiente quo mollitia autem voluptates, nobis architecto cumque.
+            Saepe accusantium at, non incidunt quibusdam harum, quam reiciendis
+            illum praesentium dolorem voluptate.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum
+            sapiente quo mollitia autem voluptates, nobis architecto cumque.
+            Saepe accusantium at, non incidunt quibusdam harum, quam reiciendis
+            illum praesentium dolorem voluptate.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum
+            sapiente quo mollitia autem voluptates, nobis architecto cumque.
+            Saepe accusantium at, non incidunt quibusdam harum, quam reiciendis
+            illum praesentium dolorem voluptate.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum
+            sapiente quo mollitia autem voluptates, nobis architecto cumque.
+            Saepe accusantium at, non incidunt quibusdam harum, quam reiciendis
+            illum praesentium dolorem voluptate.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum
+            sapiente quo mollitia autem voluptates, nobis architecto cumque.
+            Saepe accusantium at, non incidunt quibusdam harum, quam reiciendis
+            illum praesentium dolorem voluptate.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum
+            sapiente quo mollitia autem voluptates, nobis architecto cumque.
+            Saepe accusantium at, non incidunt quibusdam harum, quam reiciendis
+            illum praesentium dolorem voluptate.
+          </p>
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cum
+            sapiente quo mollitia autem voluptates, nobis architecto cumque.
+            Saepe accusantium at, non incidunt quibusdam harum, quam reiciendis
+            illum praesentium dolorem voluptate.
+          </p>
+        </main>
+        <form>
+          <div className="flex items-center gap-2 w-full">
+            <Input type="text" placeholder="Your Question..." />
+            <Button type="submit" size="icon">
+              <SendIcon />
+            </Button>
+          </div>
+        </form>
       </section>
     );
   }
