@@ -192,27 +192,38 @@ export default function UpWidgetPage() {
           </div>
         </header>
         <main className="flex flex-col justify-end gap-2 overflow-y-auto grow">
-          {messages.map((message) => (
-            <MessageBubble
-              from={message.from}
-              message={message.text}
-              avatar={
-                message.from === "Assistant"
-                  ? contextInfo?.avatar
-                  : accountInfo?.avatar
-              }
-              name={
-                message.from === "Assistant"
-                  ? contextInfo?.name
-                  : accountInfo?.name
-              }
-              key={message.id}
-            />
-          ))}
+          {messages
+            .filter((message) => message.text.trim() !== "")
+            .map((message) => (
+              <MessageBubble
+                from={message.from}
+                message={message.text}
+                avatar={
+                  message.from === "Assistant"
+                    ? contextInfo?.avatar
+                    : accountInfo?.avatar
+                }
+                name={
+                  message.from === "Assistant"
+                    ? contextInfo?.name
+                    : accountInfo?.name
+                }
+                key={message.id}
+              />
+            ))}
         </main>
-        <form>
+        {suggestions.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            {suggestions.map((suggestion) => (
+              <button className="bg-indigo-300/15 p-1 rounded-lg text-indigo-600 text-xs">
+                {suggestion}
+              </button>
+            ))}
+          </div>
+        )}
+        <form action={askQuestion}>
           <div className="flex items-center gap-2 w-full">
-            <Input type="text" placeholder="Your Question..." />
+            <Input type="text" placeholder="Your Question..." name="q" />
             <Button type="submit" size="icon">
               <SendIcon />
             </Button>

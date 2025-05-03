@@ -67,6 +67,13 @@ export function useChatBot(address?: string, connected?: boolean) {
       if (!question || !assistantId || !chatThreadId)
         throw new Error("All the parameters are required!");
 
+      let request: Message = {
+        from: "User",
+        text: question,
+      };
+
+      setMessages((prev) => [...prev, request]);
+
       const res = await askQuestionFromAssistant(
         question,
         assistantId,
@@ -78,7 +85,12 @@ export function useChatBot(address?: string, connected?: boolean) {
         message = JSON.parse(message);
       }
       console.log("🎈", message);
-      return message;
+      // return message;
+      let response: Message = {
+        from: "Assistant",
+        text: message,
+      };
+      setMessages((prev) => [...prev, response]);
     } catch (error) {
       console.error(error);
     }
