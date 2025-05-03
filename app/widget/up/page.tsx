@@ -10,6 +10,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import MessageBubble from "@/components/widget/message-bubble";
 
 export default function UpWidgetPage() {
   const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
@@ -190,8 +191,19 @@ export default function UpWidgetPage() {
             </Link>
           </div>
         </header>
-        <main className="flex flex-col justify-end overflow-y-scroll grow">
-          <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit.</p>
+        <main className="flex flex-col justify-end gap-2 overflow-y-auto grow">
+          <MessageBubble
+            from="assistant"
+            message="How can I help you?"
+            avatar={contextInfo?.avatar}
+            name={contextInfo?.name}
+          />
+          <MessageBubble
+            from="user"
+            message="What's your name? how may I call you? Can I make this any longer? I want to know how it would look!"
+            avatar={accountInfo?.avatar}
+            name={accountInfo?.name}
+          />
         </main>
         <form>
           <div className="flex items-center gap-2 w-full">
