@@ -190,7 +190,7 @@ export default function UpWidgetPage() {
   // ---------- CHATBOX STAGE
   if (isReady && !accountLoading) {
     return (
-      <section className="flex flex-col gap-3 w-screen max-w-screen h-screen max-h-screen">
+      <section className="gap-3 grid grid-rows-[auto_1fr_auto] w-screen max-w-screen h-screen max-h-screen">
         <header className="flex items-center gap-3 h-7 shrink-0">
           <div className="bg-slate-200 border-slate-600 rounded-full w-7 h-7"></div>
           <div className="flex flex-col text-xs">
@@ -232,22 +232,25 @@ export default function UpWidgetPage() {
               </div>
             )}
           </div>
-        </main>
-        {suggestions.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            {suggestions.map((suggestion) => (
-              <form action={submitQuestionForm} key={Math.random().toString()}>
-                <input type="hidden" name="q" value={suggestion} />
-                <button
-                  type="submit"
-                  className="bg-indigo-300/15 px-2 py-1 rounded-lg text-indigo-600 text-xs"
+          {suggestions.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              {suggestions.map((suggestion) => (
+                <form
+                  action={submitQuestionForm}
+                  key={Math.random().toString()}
                 >
-                  {suggestion}
-                </button>
-              </form>
-            ))}
-          </div>
-        )}
+                  <input type="hidden" name="q" value={suggestion} />
+                  <button
+                    type="submit"
+                    className="bg-indigo-300/15 px-2 py-1 rounded-lg text-indigo-600 text-xs"
+                  >
+                    {suggestion}
+                  </button>
+                </form>
+              ))}
+            </div>
+          )}
+        </main>
         <form action={submitQuestionForm} className="shrink-0">
           <div className="flex items-center gap-2 w-full">
             <Input
