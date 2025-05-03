@@ -33,6 +33,9 @@ export function useChatBot(address?: string, connected?: boolean) {
       try {
         setIsPending(true);
         const res = await createChatSession(assistantId!);
+        console.log("😁", res);
+        console.log("😁", res.message);
+        console.log("😁", typeof res.message);
         let message = JSON.parse(res.message).response;
         if (typeof message === "string") {
           message = JSON.parse(message);
