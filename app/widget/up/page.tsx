@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import MessageBubble from "@/components/widget/message-bubble";
 import MessageInput from "@/components/widget/message-input";
+import SuggestionBox from "@/components/widget/suggestion-box";
 
 export default function UpWidgetPage() {
   const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
@@ -26,6 +27,11 @@ export default function UpWidgetPage() {
   const [accountInfo, setAccountInfo] = useState<UserInfo | null>(null);
   const [initLoading, setInitLoading] = useState(true);
   const [accountLoading, setAccountLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  function makeSubmitting(state: boolean) {
+    setSubmitting(state);
+  }
 
   const messageBox = useRef<HTMLDivElement>(null);
 
@@ -260,13 +266,11 @@ export default function UpWidgetPage() {
                     action={submitQuestionForm}
                     key={Math.random().toString()}
                   >
-                    <input type="hidden" name="q" value={suggestion} />
-                    <button
-                      type="submit"
-                      className="bg-indigo-300/15 hover:bg-indigo-400 active:bg-indigo-500 px-2 py-1 rounded-lg text-indigo-600 text-xs transition-colors cursor-pointer"
-                    >
-                      {suggestion}
-                    </button>
+                    <SuggestionBox
+                      text={suggestion}
+                      submitting={submitting}
+                      makeSubmitting={makeSubmitting}
+                    />
                   </form>
                 ))}
               </div>
@@ -274,7 +278,10 @@ export default function UpWidgetPage() {
           </div>
         </main>
         <form action={submitQuestionForm} className="shrink-0">
-          <MessageInput />
+          <MessageInput
+            submitting={submitting}
+            makeSubmitting={makeSubmitting}
+          />
         </form>
       </section>
     );
