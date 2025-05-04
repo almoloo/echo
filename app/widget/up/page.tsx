@@ -227,7 +227,7 @@ export default function UpWidgetPage() {
           className="[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar]:w-2 overflow-y-auto grow"
           ref={messageBox}
         >
-          <div className="flex flex-col justify-end gap-2 h-auto">
+          <div className="flex flex-col justify-end gap-2 h-auto min-h-full">
             {messages
               .filter((message) => message.text.trim() !== "")
               .map((message) => (
@@ -253,25 +253,25 @@ export default function UpWidgetPage() {
                 <span className="text-slate-500 text-sm">Thinking</span>
               </div>
             )} */}
-          </div>
-          {suggestions.length > 0 && !awaitingResponse && (
-            <div className="flex flex-nowrap items-center gap-1 mt-3 w-full overflow-x-auto">
-              {suggestions.map((suggestion) => (
-                <form
-                  action={submitQuestionForm}
-                  key={Math.random().toString()}
-                >
-                  <input type="hidden" name="q" value={suggestion} />
-                  <button
-                    type="submit"
-                    className="bg-indigo-300/15 px-2 py-1 rounded-lg text-indigo-600 text-xs"
+            {suggestions.length > 0 && !awaitingResponse && (
+              <div className="flex flex-nowrap items-center gap-1 mt-3 w-full overflow-x-auto">
+                {suggestions.map((suggestion) => (
+                  <form
+                    action={submitQuestionForm}
+                    key={Math.random().toString()}
                   >
-                    {suggestion}
-                  </button>
-                </form>
-              ))}
-            </div>
-          )}
+                    <input type="hidden" name="q" value={suggestion} />
+                    <button
+                      type="submit"
+                      className="bg-indigo-300/15 hover:bg-indigo-400 active:bg-indigo-500 px-2 py-1 rounded-lg text-indigo-600 text-xs transition-colors cursor-pointer"
+                    >
+                      {suggestion}
+                    </button>
+                  </form>
+                ))}
+              </div>
+            )}
+          </div>
         </main>
         <form action={submitQuestionForm} className="shrink-0">
           <MessageInput />
