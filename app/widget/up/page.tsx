@@ -223,8 +223,11 @@ export default function UpWidgetPage() {
             </Link>
           </div>
         </header>
-        <main className="overflow-y-auto grow" ref={messageBox}>
-          <div className="flex flex-col justify-end gap-2 h-full">
+        <main
+          className="[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar]:w-2 overflow-y-auto grow"
+          ref={messageBox}
+        >
+          <div className="flex flex-col justify-end gap-2 h-auto">
             {messages
               .filter((message) => message.text.trim() !== "")
               .map((message) => (
@@ -244,12 +247,12 @@ export default function UpWidgetPage() {
                   key={message.id}
                 />
               ))}
-            {awaitingResponse && (
+            {/* {awaitingResponse && (
               <div className="flex items-center gap-2">
                 <EllipsisIcon className="animate-pulse" />
                 <span className="text-slate-500 text-sm">Thinking</span>
               </div>
-            )}
+            )} */}
           </div>
           {suggestions.length > 0 && !awaitingResponse && (
             <div className="flex flex-nowrap items-center gap-1 mt-3 w-full overflow-x-auto">
