@@ -86,8 +86,9 @@ export default function UpWidgetPage() {
     isPending,
     messages,
     suggestions,
-    assistantId,
     askQuestion,
+    addToMessages,
+    removeSuggestions,
   } = useChatBot(contextAccounts[0], profileConnected);
 
   useEffect(() => {
@@ -99,7 +100,15 @@ export default function UpWidgetPage() {
     });
   }, []);
 
-  async function submitQuestionForm(formData: FormData) {
+  function submitQuestionForm(formData: FormData) {
+    let message: Message = {
+      from: "User",
+      text: formData.get("q")?.toString() ?? "",
+      avatar: accountInfo?.avatar,
+      name: accountInfo?.name,
+    };
+    addToMessages(message);
+    removeSuggestions();
     askQuestion(formData);
   }
 
@@ -225,14 +234,16 @@ export default function UpWidgetPage() {
                   from={message.from}
                   message={message.text}
                   avatar={
-                    message.from === "Assistant"
+                    message.avatar ||
+                    (message.from === "Assistant"
                       ? contextInfo?.avatar
-                      : accountInfo?.avatar
+                      : accountInfo?.avatar)
                   }
                   name={
-                    message.from === "Assistant"
+                    message.name ||
+                    (message.from === "Assistant"
                       ? contextInfo?.name
-                      : accountInfo?.name
+                      : accountInfo?.name)
                   }
                   key={message.id}
                 />

@@ -15,6 +15,14 @@ export function useChatBot(address?: string, connected?: boolean) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
 
+  function addToMessages(message: Message) {
+    setMessages((prev) => [...prev, message]);
+  }
+
+  function removeSuggestions() {
+    setSuggestions([]);
+  }
+
   useEffect(() => {
     if (!address || initiated) return;
 
@@ -67,13 +75,13 @@ export function useChatBot(address?: string, connected?: boolean) {
       if (!question || !assistantId || !chatThreadId)
         throw new Error("All the parameters are required!");
 
-      let request: Message = {
-        from: "User",
-        text: question,
-      };
+      // let request: Message = {
+      //   from: "User",
+      //   text: question,
+      // };
 
-      setMessages((prev) => [...prev, request]);
-      setSuggestions([]);
+      // setMessages((prev) => [...prev, request]);
+      // setSuggestions([]);
 
       const res = await askQuestionFromAssistant(
         question,
@@ -106,6 +114,8 @@ export function useChatBot(address?: string, connected?: boolean) {
     messages,
     suggestions,
     askQuestion,
+    addToMessages,
+    removeSuggestions,
     assistantId,
   };
 }
