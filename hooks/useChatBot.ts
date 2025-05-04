@@ -1,6 +1,7 @@
 import {
   askQuestionFromAssistant,
   createChatSession,
+  deliverMessage,
 } from "@/lib/actions/chat-bot";
 import { getUser } from "@/lib/data/user";
 import { useEffect, useState } from "react";
@@ -70,6 +71,11 @@ export function useChatBot(address?: string, connected?: boolean) {
   }, [assistantId, connected, initiated]);
 
   async function askQuestion(formData: FormData) {
+    const deliveredMessage = deliverMessage({
+      from: "0x6C863ae49F6cef7ab24a548f3900d8698361578B",
+      to: "0x6C863ae49F6cef7ab24a548f3900d8698361578B",
+      text: "Hi how are you doing?",
+    });
     const question = formData.get("q")?.toString();
     try {
       if (!question || !assistantId || !chatThreadId)

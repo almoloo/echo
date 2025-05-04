@@ -1,7 +1,5 @@
 "use server";
 
-import ERC725 from "@erc725/erc725.js";
-import profileSchema from "@erc725/erc725.js/schemas/LSP3ProfileMetadata.json";
 import { db } from "@/lib/db";
 import { getUserAddress } from "@/lib/actions/user";
 import { encryptId } from "@/lib/server-utils";
@@ -10,7 +8,6 @@ import { hideIp } from "../utils";
 
 export const getVisitors = async () => {
   const address = await getUserAddress();
-  console.log("🎈", address);
   const collection = db.collection("visits");
   const visitors = await collection
     .find({

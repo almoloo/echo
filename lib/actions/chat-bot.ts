@@ -72,17 +72,14 @@ export const saveQuestionForLater = async (
   return res.acknowledged;
 };
 
-export const deliverMessage = async (
-  from: string,
-  to: string,
-  message: string
-) => {
+export const deliverMessage = async (message: DeliveredMessage) => {
   const collection = db.collection("messages");
   const res = await collection.insertOne({
     created_at: Date.now(),
-    from,
-    to,
-    message,
+    from: message.from,
+    to: message.to,
+    text: message.text,
+    read: false,
   });
 
   return res.acknowledged;
