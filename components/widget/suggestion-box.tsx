@@ -1,24 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
 import { useFormStatus } from "react-dom";
 
 interface SuggestionBoxProps {
   text: string;
-  submitting: boolean;
-  makeSubmitting: (state: boolean) => void;
 }
 
-export default function SuggestionBox({
-  text,
-  submitting,
-  makeSubmitting,
-}: SuggestionBoxProps) {
+export default function SuggestionBox({ text }: SuggestionBoxProps) {
   const { pending } = useFormStatus();
-
-  useEffect(() => {
-    makeSubmitting(pending);
-  }, [pending]);
 
   return (
     <>

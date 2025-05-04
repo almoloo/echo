@@ -14,11 +14,6 @@ export function useChatBot(address?: string, connected?: boolean) {
   const [initiated, setInitiated] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isPendingResponse, setIsPendingResponse] = useState(false);
-
-  function makePendingResponse() {
-    setIsPendingResponse(true);
-  }
 
   useEffect(() => {
     if (!address || initiated) return;
@@ -72,15 +67,13 @@ export function useChatBot(address?: string, connected?: boolean) {
       if (!question || !assistantId || !chatThreadId)
         throw new Error("All the parameters are required!");
 
-      setSuggestions([]);
-      setIsPendingResponse(true);
-
       let request: Message = {
         from: "User",
         text: question,
       };
 
       setMessages((prev) => [...prev, request]);
+      setSuggestions([]);
 
       const res = await askQuestionFromAssistant(
         question,
@@ -102,8 +95,6 @@ export function useChatBot(address?: string, connected?: boolean) {
       setMessages((prev) => [...prev, response]);
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsPendingResponse(false);
     }
   }
 
@@ -112,8 +103,6 @@ export function useChatBot(address?: string, connected?: boolean) {
   return {
     isReady,
     isPending,
-    isPendingResponse,
-    makePendingResponse,
     messages,
     suggestions,
     askQuestion,

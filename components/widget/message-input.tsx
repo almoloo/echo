@@ -4,22 +4,11 @@ import { useFormStatus } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { LoaderIcon, SendIcon } from "lucide-react";
-import { useEffect } from "react";
 
-interface MessageInputProps {
-  submitting: boolean;
-  makeSubmitting: (state: boolean) => void;
-}
+interface MessageInputProps {}
 
-export default function MessageInput({
-  submitting,
-  makeSubmitting,
-}: MessageInputProps) {
+export default function MessageInput({}: MessageInputProps) {
   const { pending } = useFormStatus();
-
-  useEffect(() => {
-    makeSubmitting(pending);
-  }, [pending]);
 
   return (
     <div className="flex items-center gap-2 w-full">

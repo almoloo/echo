@@ -27,11 +27,6 @@ export default function UpWidgetPage() {
   const [accountInfo, setAccountInfo] = useState<UserInfo | null>(null);
   const [initLoading, setInitLoading] = useState(true);
   const [accountLoading, setAccountLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-
-  function makeSubmitting(state: boolean) {
-    setSubmitting(state);
-  }
 
   const messageBox = useRef<HTMLDivElement>(null);
 
@@ -93,8 +88,6 @@ export default function UpWidgetPage() {
     suggestions,
     assistantId,
     askQuestion,
-    isPendingResponse,
-    makePendingResponse,
   } = useChatBot(contextAccounts[0], profileConnected);
 
   useEffect(() => {
@@ -107,17 +100,8 @@ export default function UpWidgetPage() {
   }, []);
 
   async function submitQuestionForm(formData: FormData) {
-    setAwaitingResponse(true);
-    makePendingResponse();
     askQuestion(formData);
   }
-
-  const [awaitingResponse, setAwaitingResponse] = useState(false);
-  useEffect(() => {
-    if (!isPendingResponse) {
-      setAwaitingResponse(false);
-    }
-  }, [isPendingResponse]);
 
   useEffect(() => {
     messageBox.current?.scrollTo({
@@ -259,18 +243,14 @@ export default function UpWidgetPage() {
                 <span className="text-slate-500 text-sm">Thinking</span>
               </div>
             )} */}
-            {suggestions.length > 0 && !awaitingResponse && (
+            {suggestions.length > 0 && (
               <div className="flex flex-nowrap items-center gap-1 mt-3 w-full overflow-x-auto">
                 {suggestions.map((suggestion) => (
                   <form
                     action={submitQuestionForm}
                     key={Math.random().toString()}
                   >
-                    <SuggestionBox
-                      text={suggestion}
-                      submitting={submitting}
-                      makeSubmitting={makeSubmitting}
-                    />
+                    <SuggestionBox text={suggestion} />
                   </form>
                 ))}
               </div>
@@ -278,10 +258,7 @@ export default function UpWidgetPage() {
           </div>
         </main>
         <form action={submitQuestionForm} className="shrink-0">
-          <MessageInput
-            submitting={submitting}
-            makeSubmitting={makeSubmitting}
-          />
+          <MessageInput />
         </form>
       </section>
     );
