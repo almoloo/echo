@@ -20,6 +20,7 @@ export default function MessageInput({
   useEffect(() => {
     makeSubmitting(pending);
   }, [pending]);
+
   return (
     <div className="flex items-center gap-2 w-full">
       <Input
@@ -27,10 +28,10 @@ export default function MessageInput({
         placeholder="Your Question..."
         name="q"
         className="outline-0"
-        disabled={submitting}
+        disabled={pending}
       />
-      <Button type="submit" size="icon" disabled={submitting}>
-        {submitting ? <LoaderIcon className="animate-spin" /> : <SendIcon />}
+      <Button type="submit" size="icon" disabled={pending}>
+        {pending ? <LoaderIcon className="animate-spin" /> : <SendIcon />}
       </Button>
     </div>
   );

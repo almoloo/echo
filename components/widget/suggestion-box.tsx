@@ -26,7 +26,7 @@ export default function SuggestionBox({
       <button
         type="submit"
         className="bg-indigo-300/15 hover:bg-indigo-400 active:bg-indigo-500 px-2 py-1 rounded-lg text-indigo-600 text-xs transition-colors cursor-pointer"
-        disabled={submitting}
+        disabled={pending}
       >
         {text}
       </button>
