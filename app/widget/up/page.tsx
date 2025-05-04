@@ -18,6 +18,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import MessageBubble from "@/components/widget/message-bubble";
+import MessageInput from "@/components/widget/message-input";
 
 export default function UpWidgetPage() {
   const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
@@ -107,7 +108,9 @@ export default function UpWidgetPage() {
 
   const [awaitingResponse, setAwaitingResponse] = useState(false);
   useEffect(() => {
-    setAwaitingResponse(isPendingResponse);
+    if (!isPendingResponse) {
+      setAwaitingResponse(false);
+    }
   }, [isPendingResponse]);
 
   useEffect(() => {
@@ -268,22 +271,7 @@ export default function UpWidgetPage() {
           )}
         </main>
         <form action={submitQuestionForm} className="shrink-0">
-          <div className="flex items-center gap-2 w-full">
-            <Input
-              type="text"
-              placeholder="Your Question..."
-              name="q"
-              className="outline-0"
-              disabled={awaitingResponse}
-            />
-            <Button type="submit" size="icon" disabled={awaitingResponse}>
-              {awaitingResponse ? (
-                <LoaderIcon className="animate-spin" />
-              ) : (
-                <SendIcon />
-              )}
-            </Button>
-          </div>
+          <MessageInput />
         </form>
       </section>
     );
