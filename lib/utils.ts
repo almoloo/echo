@@ -68,3 +68,10 @@ export function hideIp(ip: string) {
   const ipArr = ip.split(".");
   return `${ipArr[0]}.***.***.${ipArr[3]}`;
 }
+
+export function walletAbr(wallet: string) {
+  return `${wallet.substring(0, 6)}...${wallet.substring(
+    wallet.length - 6,
+    wallet.length
+  )}`;
+}

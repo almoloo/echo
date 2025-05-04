@@ -3,13 +3,14 @@ import {
   BotMessageSquareIcon,
   DatabaseIcon,
   LayoutDashboardIcon,
-  MailIcon,
   MessageCircleQuestionIcon,
   UserRoundPenIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import CharacterStats from "@/components/profile/character-stats";
+import MessageButton from "@/components/layout/message-button";
+import QuestionButton from "@/components/layout/question-button";
 
 interface SidebarItemProps {
   className?: string;
@@ -70,32 +71,8 @@ export default function Sidebar() {
       />
       {/* <Separator className="mt-auto mb-3" /> */}
       <div className="flex flex-col gap-1 mt-auto">
-        <Link
-          href="/"
-          className={`${buttonVariants({
-            variant: "outline",
-            size: "lg",
-          })} grow justify-start`}
-        >
-          <MailIcon />
-          Messages
-          <Badge variant="secondary" className="ml-auto">
-            0
-          </Badge>
-        </Link>
-        <Link
-          href="/"
-          className={`${buttonVariants({
-            variant: "outline",
-            size: "lg",
-          })} grow justify-start`}
-        >
-          <MessageCircleQuestionIcon />
-          Questions
-          <Badge variant="secondary" className="ml-auto">
-            0
-          </Badge>
-        </Link>
+        <MessageButton />
+        <QuestionButton />
         {/* <SidebarItem
           icon={<MailIcon />}
           isActive={false}

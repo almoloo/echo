@@ -84,3 +84,15 @@ export const deliverMessage = async (message: DeliveredMessage) => {
 
   return res.acknowledged;
 };
+
+export const deliverQuestion = async (question: Question) => {
+  const collection = db.collection("questions");
+  const res = await collection.insertOne({
+    created_at: Date.now(),
+    address: question.address,
+    question: question.question,
+    read: false,
+  });
+
+  return res.acknowledged;
+};

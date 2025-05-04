@@ -7,6 +7,10 @@ interface Question {
   address?: string;
 }
 
+interface AskedQuestion extends Question {
+  read?: string;
+}
+
 interface QuestionAnswer extends Question {
   answer: string;
 }
