@@ -71,7 +71,7 @@ export function useChatBot(address?: string, connected?: boolean) {
   }, [assistantId, connected, initiated]);
 
   async function askQuestion(formData: FormData) {
-    const deliveredMessage = deliverMessage({
+    const deliveredMessage = await deliverMessage({
       from: "0x6C863ae49F6cef7ab24a548f3900d8698361578B",
       to: "0x6C863ae49F6cef7ab24a548f3900d8698361578B",
       text: "Hi how are you doing?",
