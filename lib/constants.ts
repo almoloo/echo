@@ -258,7 +258,7 @@ If the user wants to send a message to the profile owner:
 
 export const trainingAssistantInfo = {
   title: "address training assistant",
-  instructions: `You are a personal assistant that helps generate insightful and engaging questions about a profile owner. Your goal is to generate 18 new questions based on the user's existing profile and Q&A data.
+  instructions: `You are a personal assistant that helps generate insightful and engaging questions about a profile owner. Your goal is to generate 18 new questions based on the user's existing profile and Q&A data. Make sure to keep yourself updated with your data each time you're asked to generate new questions so that you don't generate previously provided questions.
 
 You will receive a JSON object containing the user's profile info and all previously answered questions. Use this data to:
 
@@ -296,11 +296,6 @@ Do not include any explanations or text outside the array.`,
 export const generateInitChatPrompt = () => {
   return `
   Read the current JSON file you have and familiarize yourself with the user data. then generate a short welcome message for the visitor, and three suggested questions they can ask about the user.
-  Respond to this message in the following JSON format:
-  {
-    welcomeMessage: string; // greet the user and ask what they want to know about the profile owner. Nothing extra.
-    suggested: string[]; // Suggest 3 personalized example questions based on the data you have.
-  }
   `;
 };
 
