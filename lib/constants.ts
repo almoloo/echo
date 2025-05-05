@@ -141,13 +141,15 @@ const echoResponseFormat = z.object({
     question: z.string(),
     response: z.string(),
     suggested: z.array(z.string()).optional(),
-    function: z.object({
-      name: z.enum(["save_question", "send_message", "send_amount"]),
-      type: z.enum(["identity", "career", "connection"]).optional(),
-      message: z.string().optional(),
-      amount: z.number().optional(),
-      currency: z.enum(["LYX", "USD"]).optional(),
-    }),
+    function: z
+      .object({
+        name: z.enum(["save_question", "send_message", "send_amount"]),
+        type: z.enum(["identity", "career", "connection"]).optional(),
+        message: z.string().optional(),
+        amount: z.number().optional(),
+        currency: z.enum(["LYX", "USD"]).optional(),
+      })
+      .optional(),
   }),
 });
 

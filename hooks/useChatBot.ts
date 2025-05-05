@@ -50,11 +50,12 @@ export function useChatBot(address?: string, connected?: boolean) {
         if (typeof message === "string") {
           message = JSON.parse(message);
         }
+        console.log("😁 2", message);
         setChatThreadId(res.threadId);
         setSuggestions(message.suggested);
         let welcomeMessage: Message = {
           from: "Assistant",
-          text: message.welcomeMessage,
+          text: message.response,
         };
         setMessages((prev) => [...prev, welcomeMessage]);
         setIsReady(true);
@@ -72,11 +73,6 @@ export function useChatBot(address?: string, connected?: boolean) {
   }, [assistantId, connected, initiated]);
 
   async function askQuestion(formData: FormData) {
-    const askedQuestion = await deliverQuestion({
-      question: "can you answer a question?",
-      type: "career",
-      address: "0x6C863ae49F6cef7ab24a548f3900d8698361578B",
-    });
     const question = formData.get("q")?.toString();
     try {
       if (!question || !assistantId || !chatThreadId)
