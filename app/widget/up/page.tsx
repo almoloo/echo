@@ -224,7 +224,7 @@ export default function UpWidgetPage() {
           </div>
         </header>
         <main
-          className="[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar]:w-2 overflow-y-auto grow"
+          className="[&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-track]:bg-gray-100 px-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar]:w-2 overflow-y-auto grow"
           ref={messageBox}
         >
           <div className="flex flex-col justify-end gap-2 h-auto min-h-full">
@@ -269,7 +269,7 @@ export default function UpWidgetPage() {
             )}
           </div>
         </main>
-        <form action={submitQuestionForm} className="shrink-0">
+        <form action={submitQuestionForm} className="px-1 pb-1 shrink-0">
           <MessageInput />
         </form>
       </section>

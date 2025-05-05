@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
           let name: string;
           if (user) {
             // FETCH ID
-            userID = user._id.toString();
+            userID = user.id;
             avatar = user.info.avatar;
             name = user.info.name;
           } else {
