@@ -8,7 +8,8 @@ import { getUser } from "@/lib/data/user";
 import { UPClientProvider } from "@lukso/up-provider";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { parseEther } from "viem";
+import { createWalletClient, custom, parseEther } from "viem";
+import { lukso } from "viem/chains";
 
 export function useChatBot(
   address?: string,
@@ -160,11 +161,25 @@ export function useChatBot(
 
   async function sendAmount(lyxAmount: number) {
     console.log("send amount", lyxAmount);
-    await provider?.request("eth_sendTransaction", {
-      from: account,
-      to: address,
-      value: parseEther(lyxAmount.toString()),
+    // await provider?.request("eth_sendTransaction", {
+    //   from: account,
+    //   to: address,
+    //   value: parseEther(lyxAmount.toString()),
+    // });
+    const client = createWalletClient({
+      chain: lukso,
+      transport: custom(window.lukso),
     });
+
+    const [account] = await client.requestAddresses();
+
+    const hash = await client.sendTransaction({
+      account,
+      to: address as `0x${string}`, // Replace with recipient address
+      value: BigInt(lyxAmount * 1e18), // 0.5 LYX in wei
+    });
+
+    console.log("🎈", hash);
   }
 
   return {
