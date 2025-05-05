@@ -10,7 +10,7 @@ import { createAssistants } from "@/lib/actions/ai";
 export const getUserAddress = async () => {
   const session = await getServerSession(authOptions);
   // if (!session?.user) throw new Error("You need to be signed in!");
-  return session.user.address.toLowerCase();
+  return session!.user.address.toLowerCase();
 };
 
 export const createUser = async (address: string) => {
