@@ -8,7 +8,11 @@ import { getUser } from "@/lib/data/user";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export function useChatBot(address?: string, connected?: boolean) {
+export function useChatBot(
+  address?: string,
+  connected?: boolean,
+  account?: string
+) {
   const [isReady, setIsReady] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [assistantId, setAssistantId] = useState<string | null>(null);
@@ -94,22 +98,66 @@ export function useChatBot(address?: string, connected?: boolean) {
 
       let message = JSON.parse(res!).response;
       console.log("🎈", message);
-      // if (typeof message === "string") {
-      //   message = JSON.parse(message);
-      // }
-      // console.log("🎈", message);
+      if (typeof message === "string") {
+        message = JSON.parse(message);
+      }
+      console.log("🎈", message);
       // return message;
       let response: Message = {
         from: "Assistant",
-        text: message,
+        text: message.response,
       };
       setMessages((prev) => [...prev, response]);
+
+      if (message.function) {
+        if (message.function.name === "save_question") {
+          const qType = message.function.type;
+          const qText = message.question;
+
+          const deliveredQuestion = await deliverQuestion({
+            question: qText,
+            type: qType,
+            from: account,
+            address,
+          });
+        }
+        if (message.function.name === "send_message") {
+          const qMessage = message.function.message;
+
+          const deliveredMessage = await deliverMessage({
+            from: account!,
+            text: qMessage,
+            to: address!,
+          });
+        }
+        if (message.function.name === "send_amount") {
+          const qCurrency = message.function.currency;
+          let qAmount: number = message.function.amount;
+
+          if (qCurrency === "USD") {
+            const response = await fetch(
+              "https://api.coingecko.com/api/v3/simple/price?ids=lukso-token&vs_currencies=usd"
+            );
+            const data = await response.json();
+            const lyxPriceInUsd = data["lukso-token"].usd;
+
+            if (!lyxPriceInUsd) throw new Error("Failed to fetch LYX price");
+
+            const lyxAmount = qAmount / lyxPriceInUsd;
+            qAmount = lyxAmount;
+          }
+
+          await sendAmount(qAmount);
+        }
+      }
     } catch (error) {
       console.error(error);
     }
   }
 
-  async function sendAmount(lyxAmount: number) {}
+  async function sendAmount(lyxAmount: number) {
+    console.log("send amount", lyxAmount);
+  }
 
   return {
     isReady,

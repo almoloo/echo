@@ -85,10 +85,11 @@ export const deliverMessage = async (message: DeliveredMessage) => {
   return res.acknowledged;
 };
 
-export const deliverQuestion = async (question: Question) => {
+export const deliverQuestion = async (question: AskedQuestion) => {
   const collection = db.collection("questions");
   const res = await collection.insertOne({
     created_at: Date.now(),
+    from: question.from,
     address: question.address,
     question: question.question,
     read: false,

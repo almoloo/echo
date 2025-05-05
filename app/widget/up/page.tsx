@@ -89,7 +89,7 @@ export default function UpWidgetPage() {
     askQuestion,
     addToMessages,
     removeSuggestions,
-  } = useChatBot(contextAccounts[0], profileConnected);
+  } = useChatBot(contextAccounts[0], profileConnected, accounts[0]);
 
   useEffect(() => {
     setVisitorInfo({
