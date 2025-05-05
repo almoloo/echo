@@ -228,7 +228,7 @@ export default function UpWidgetPage() {
         >
           <div className="flex flex-col justify-end gap-2 h-auto min-h-full">
             {messages
-              .filter((message) => message.text.trim() !== "")
+              .filter((message) => message.text !== "")
               .map((message) => (
                 <MessageBubble
                   from={message.from}

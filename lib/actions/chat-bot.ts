@@ -12,7 +12,7 @@ export const createChatSession = async (assistantId: string) => {
 
   const welcomeMessage = await openai.beta.threads.messages.create(thread.id, {
     role: "assistant",
-    content: generateInitChatPrompt(),
+    content: "Hi",
   });
 
   let run = await openai.beta.threads.runs.createAndPoll(thread.id, {
