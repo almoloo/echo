@@ -104,7 +104,7 @@ export const answerAskedQuestion = async (id: string, answer: string) => {
 
   const answersCollection = db.collection("answers");
   const res = await answersCollection.insertOne({
-    type: question.type,
+    type: question.type || "identity",
     question: question.question,
     answer,
     address: question.address,
