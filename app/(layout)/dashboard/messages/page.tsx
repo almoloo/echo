@@ -17,7 +17,7 @@ export default async function page() {
       <div className="flex flex-col gap-2">
         {messages.length > 0 ? (
           <>
-            {messages.map((message) => (
+            {messages.reverse().map((message) => (
               <MessageItem message={message} key={message.id} />
             ))}
           </>

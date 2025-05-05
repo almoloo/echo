@@ -57,7 +57,7 @@ export default function page() {
           <>
             {questions.length > 0 ? (
               <>
-                {questions.map((question) => (
+                {questions.reverse().map((question) => (
                   <QuestionItem
                     question={question}
                     removeFromList={removeFromList}
