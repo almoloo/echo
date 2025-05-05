@@ -5,13 +5,16 @@ import {
   deliverQuestion,
 } from "@/lib/actions/chat-bot";
 import { getUser } from "@/lib/data/user";
+import { UPClientProvider } from "@lukso/up-provider";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { parseEther } from "viem";
 
 export function useChatBot(
   address?: string,
   connected?: boolean,
-  account?: string
+  account?: string,
+  provider?: UPClientProvider
 ) {
   const [isReady, setIsReady] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -157,6 +160,11 @@ export function useChatBot(
 
   async function sendAmount(lyxAmount: number) {
     console.log("send amount", lyxAmount);
+    await provider?.request("eth_sendTransaction", {
+      from: account,
+      to: address,
+      value: parseEther(lyxAmount.toString()),
+    });
   }
 
   return {

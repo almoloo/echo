@@ -66,5 +66,6 @@ export function useUniversalProfile() {
     accounts,
     contextAccounts,
     profileConnected,
+    provider,
   };
 }

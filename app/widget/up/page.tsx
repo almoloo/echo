@@ -22,7 +22,8 @@ import MessageInput from "@/components/widget/message-input";
 import SuggestionBox from "@/components/widget/suggestion-box";
 
 export default function UpWidgetPage() {
-  const { accounts, contextAccounts, profileConnected } = useUniversalProfile();
+  const { accounts, contextAccounts, profileConnected, provider } =
+    useUniversalProfile();
   const [contextInfo, setContextInfo] = useState<UserInfo | null>(null);
   const [accountInfo, setAccountInfo] = useState<UserInfo | null>(null);
   const [initLoading, setInitLoading] = useState(true);
