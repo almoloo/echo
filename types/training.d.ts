@@ -1,6 +1,7 @@
 type TrainingAttribute = "identity" | "career" | "connection";
 
 interface Question {
+  created_at?: string;
   id?: string;
   type: TrainingAttribute;
   question: string;
@@ -8,6 +9,7 @@ interface Question {
 }
 
 interface AskedQuestion extends Question {
+  from?: string;
   read?: string;
 }
 

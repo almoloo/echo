@@ -93,3 +93,31 @@ export const answerSkipped = async (id: string, answer: string) => {
   await updateAssistants();
   return res.acknowledged;
 };
+
+export const answerAskedQuestion = async (id: string, answer: string) => {
+  const decryptedId = decryptId(id);
+  const questionsCollection = db.collection("questions");
+  const delRes = await questionsCollection.findOneAndDelete({
+    _id: new ObjectId(decryptedId),
+  });
+  const question = delRes as unknown as Question;
+
+  const answersCollection = db.collection("answers");
+  const res = await answersCollection.insertOne({
+    type: question.type,
+    question: question.question,
+    answer,
+    address: question.address,
+  });
+
+  await updateAssistants();
+  return res.acknowledged;
+};
+
+export const removeAskedQuestion = async (id: string) => {
+  const decryptedId = decryptId(id);
+  const collection = db.collection("questions");
+  const res = await collection.deleteOne({ _id: new ObjectId(decryptedId) });
+  await updateAssistants();
+  return res.acknowledged;
+};

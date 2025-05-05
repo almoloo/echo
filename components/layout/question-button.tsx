@@ -29,7 +29,7 @@ export default function QuestionButton() {
 
   return (
     <Link
-      href="/dashboard/messages"
+      href="/dashboard/questions"
       className={`${buttonVariants({
         variant: "outline",
         size: "lg",

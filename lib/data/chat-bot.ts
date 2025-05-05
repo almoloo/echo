@@ -46,7 +46,7 @@ export const fetchUnreadAskedQuestions = async () => {
   const collection = db.collection("questions");
 
   const askedQuestions = await collection
-    .find({ to: address, read: false })
+    .find({ address, read: false })
     .toArray();
 
   return askedQuestions.length;
@@ -56,7 +56,7 @@ export const fetchAskedQuestions = async () => {
   const address = await getUserAddress();
   const collection = db.collection("questions");
 
-  const askedQuestions = await collection.find({ to: address }).toArray();
+  const askedQuestions = await collection.find({ address }).toArray();
 
   const encryptedArray = askedQuestions.map((question) => {
     const newObj: any = question;
@@ -65,6 +65,15 @@ export const fetchAskedQuestions = async () => {
     newObj.id = encryptedId;
     return newObj as AskedQuestion;
   });
+
+  await collection.updateMany(
+    { address },
+    {
+      $set: {
+        read: true,
+      },
+    }
+  );
 
   return encryptedArray;
 };

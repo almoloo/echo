@@ -1,12 +1,13 @@
 import VisitorCard from "@/components/analytics/visitor-card";
 import VisitorsChart from "@/components/analytics/visitors-chart";
 import Heading from "@/components/layout/heading";
+import WidgetUrlCard from "@/components/profile/widget-url-card";
 import { getVisitors } from "@/lib/data/analytics";
 import { EyeIcon, LayoutDashboardIcon } from "lucide-react";
 
 export default async function DashboardPage() {
   const visitors = await getVisitors();
-  console.log(visitors);
+
   return (
     <div>
       <Heading
@@ -14,6 +15,8 @@ export default async function DashboardPage() {
         subtitle="These are the people who’ve visited your profile — curious minds, potential connections, or future collaborators."
         icon={<LayoutDashboardIcon />}
       />
+
+      <WidgetUrlCard className="mb-5" />
 
       <VisitorsChart data={visitors} className="mb-5" />
 
