@@ -2,8 +2,9 @@ import VisitorCard from "@/components/analytics/visitor-card";
 import VisitorsChart from "@/components/analytics/visitors-chart";
 import Heading from "@/components/layout/heading";
 import WidgetUrlCard from "@/components/profile/widget-url-card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getVisitors } from "@/lib/data/analytics";
-import { EyeIcon, LayoutDashboardIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, LayoutDashboardIcon } from "lucide-react";
 
 export default async function DashboardPage() {
   const visitors = await getVisitors();
@@ -29,7 +30,15 @@ export default async function DashboardPage() {
           ))}
         </div>
       ) : (
-        <div>no visitors!</div>
+        <Alert className="bg-slate-50">
+          <EyeOffIcon className="w-4 h-4" />
+          <AlertTitle>No Visitors Yet</AlertTitle>
+          <AlertDescription>
+            Looks like no one’s dropped by your profile just yet. Once someone
+            checks it out, you’ll see them listed here — both anonymous and
+            connected visitors.
+          </AlertDescription>
+        </Alert>
       )}
     </div>
   );

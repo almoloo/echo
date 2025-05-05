@@ -163,8 +163,7 @@ export default function ProfileForm(props: ProfileFormProps) {
         type="hidden"
         name="avatar"
         placeholder="avatar"
-        defaultValue={formData.avatar}
-        readOnly
+        value={formData.avatar}
       />
 
       <Button type="submit" className="self-start" disabled={pending}>

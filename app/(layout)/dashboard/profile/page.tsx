@@ -26,6 +26,7 @@ export default async function ProfilePage() {
         links,
         tags,
         email: formData.get("email")?.toString(),
+        avatar: formData.get("avatar")?.toString(),
       };
       await editUser(userInfo);
     } catch (error) {

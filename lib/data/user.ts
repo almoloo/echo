@@ -69,6 +69,8 @@ export const getUser = async (address: string) => {
     address: address.toLowerCase(),
   });
 
+  if (!user) return null;
+
   const id = encryptId(user?._id.toString()!);
   const userObj: any = user;
   delete userObj["_id"];

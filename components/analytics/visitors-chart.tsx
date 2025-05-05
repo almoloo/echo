@@ -11,6 +11,8 @@ import ByConnection from "@/components/analytics/by-connection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ByBrowser from "@/components/analytics/by-browser";
 import ByOS from "@/components/analytics/by-os";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CircleSlashIcon } from "lucide-react";
 
 interface VisitorsChartProps {
   data: VisitData[];
@@ -46,10 +48,14 @@ export default function VisitorsChart({ data, className }: VisitorsChartProps) {
             </TabsContent>
           </Tabs>
         ) : (
-          <div className="m-5 text-slate-500 text-sm text-center">
-            Your Universal Profile hasn’t had any visitors yet. Share your
-            profile link to start tracking views and engagement.
-          </div>
+          <Alert className="bg-slate-50">
+            <CircleSlashIcon className="w-4 h-4" />
+            <AlertTitle>Nothing to Show</AlertTitle>
+            <AlertDescription>
+              Your Universal Profile hasn’t had any visitors yet. Share your
+              profile link to start tracking views and engagement.
+            </AlertDescription>
+          </Alert>
         )}
       </CardContent>
     </Card>
