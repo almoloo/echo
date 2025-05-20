@@ -43,9 +43,12 @@ export default function UpWidgetPage() {
           throw new Error("Failed to fetch user info!");
         }
       } catch (error) {
-        setTimeout(() => {
-          init();
-        }, 3000);
+        // setTimeout(() => {
+        //   init();
+        // }, 3000);
+        console.error(error);
+      } finally {
+        setInitLoading(false);
       }
     }
 
