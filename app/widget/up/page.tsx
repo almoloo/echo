@@ -46,7 +46,7 @@ export default function UpWidgetPage() {
         // setTimeout(() => {
         //   init();
         // }, 3000);
-        console.error(error);
+        console.error("init loading error: ", error);
       } finally {
         setInitLoading(false);
       }
@@ -67,9 +67,12 @@ export default function UpWidgetPage() {
           throw new Error("Failed to fetch user info!");
         }
       } catch (error) {
-        setTimeout(() => {
-          init();
-        }, 3000);
+        // setTimeout(() => {
+        //   init();
+        // }, 3000);
+        console.error("account loading error: ", error);
+      } finally {
+        setAccountLoading(false);
       }
     }
 
