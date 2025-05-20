@@ -47,8 +47,6 @@ export default function UpWidgetPage() {
         //   init();
         // }, 3000);
         console.error("init loading error: ", error);
-      } finally {
-        setInitLoading(false);
       }
     }
 
